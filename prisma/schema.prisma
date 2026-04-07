@@ -1,0 +1,106 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Business {
+  id           Int      @id @default(autoincrement())
+  name         String
+  industryType String
+  phone        String
+  email        String
+  timezone     String   @default("America/New_York")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  clients         Client[]
+  jobs            Job[]
+  invoices        Invoice[]
+  reminderMessages ReminderMessage[]
+}
+
+model Client {
+  id                 Int       @id @default(autoincrement())
+  businessId         Int
+  firstName          String
+  lastName           String
+  companyName        String?
+  phone              String
+  email              String?
+  address            String?
+  notes              String?
+  status             String    @default("ACTIVE")
+  lastJobAt          DateTime?
+  totalRevenue       Float     @default(0)
+  outstandingBalance Float     @default(0)
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  business         Business          @relation(fields: [businessId], references: [id])
+  jobs             Job[]
+  invoices         Invoice[]
+  reminderMessages ReminderMessage[]
+}
+
+model Job {
+  id             Int       @id @default(autoincrement())
+  businessId     Int
+  clientId       Int
+  title          String
+  description    String?
+  address        String
+  scheduledStart DateTime
+  scheduledEnd   DateTime?
+  status         String    @default("SCHEDULED")
+  quotedAmount   Float?
+  finalAmount    Float?
+  internalNotes  String?
+  completedAt    DateTime?
+  invoicedAt     DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  business Business  @relation(fields: [businessId], references: [id])
+  client   Client    @relation(fields: [clientId], references: [id])
+  invoices Invoice[]
+}
+
+model Invoice {
+  id            Int       @id @default(autoincrement())
+  businessId    Int
+  clientId      Int
+  jobId         Int?
+  invoiceNumber String
+  amount        Float
+  paidAmount    Float     @default(0)
+  issueDate     DateTime
+  dueDate       DateTime
+  paidDate      DateTime?
+  status        String    @default("PENDING")
+  notes         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  business Business @relation(fields: [businessId], references: [id])
+  client   Client   @relation(fields: [clientId], references: [id])
+  job      Job?     @relation(fields: [jobId], references: [id])
+}
+
+model ReminderMessage {
+  id         Int      @id @default(autoincrement())
+  businessId Int
+  clientId   Int
+  invoiceId  Int?
+  jobId      Int?
+  content    String
+  status     String   @default("SENT")
+  sentAt     DateTime @default(now())
+  createdAt  DateTime @default(now())
+
+  business Business @relation(fields: [businessId], references: [id])
+  client   Client   @relation(fields: [clientId], references: [id])
+}
