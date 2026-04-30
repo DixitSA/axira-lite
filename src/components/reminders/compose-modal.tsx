@@ -1,71 +1,156 @@
 "use client";
 
-import { useState } from "react";
-import { X } from "lucide-react";
+import { useState, useTransition, useEffect } from "react";
+import { X, Send, AlignLeft } from "lucide-react";
+import { sendReminder } from "@/lib/actions/reminders";
+import { REMINDER_TEMPLATES, interpolateTemplate } from "@/lib/utils/reminder-templates";
 
 interface ComposeModalProps {
   isOpen: boolean;
   onClose: () => void;
   clientId?: number;
-  invoiceId?: number;
   clientName?: string;
+  invoiceId?: number;
+  jobId?: number;
+  // Context for interpolation
+  amount?: number;
+  dueDate?: Date;
+  serviceType?: string;
+  appointmentDate?: Date;
 }
 
-export default function ComposeModal({ isOpen, onClose, clientId, invoiceId, clientName }: ComposeModalProps) {
+export default function ComposeModal({ 
+  isOpen, 
+  onClose, 
+  clientId, 
+  clientName,
+  invoiceId,
+  jobId,
+  amount,
+  dueDate,
+  serviceType,
+  appointmentDate
+}: ComposeModalProps) {
   const [message, setMessage] = useState("");
+  const [isPending, startTransition] = useTransition();
+
+  // Reset message when modal opens with new context
+  useEffect(() => {
+    if (isOpen) setMessage("");
+  }, [isOpen, clientId]);
 
   if (!isOpen) return null;
 
+  const applyTemplate = (templateType: keyof typeof REMINDER_TEMPLATES) => {
+    const firstName = clientName ? clientName.split(" ")[0] : "Customer";
+    const interpolated = interpolateTemplate(REMINDER_TEMPLATES[templateType], {
+      firstName,
+      businessName: "Axira Lite", // Hardcoded business context
+      amount,
+      dueDate,
+      serviceType: serviceType || "service",
+      appointmentDate,
+    });
+    setMessage(interpolated);
+  };
+
   const handleSend = () => {
-    alert(`Reminder placeholder! Would send to Client ${clientId} (Invoice ${invoiceId})`);
-    onClose();
+    if (!clientId) return;
+    
+    startTransition(async () => {
+      try {
+        await sendReminder({
+          businessId: 1, // Single hardcoded business context
+          clientId,
+          invoiceId,
+          jobId,
+          content: message,
+        });
+        onClose();
+        alert("Reminder sent successfully!"); // Basic toast
+      } catch (error) {
+        alert(error instanceof Error ? error.message : "Failed to send reminder");
+      }
+    });
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-md overflow-hidden flex flex-col">
-        <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
-          <h3 className="font-semibold text-gray-900">Send Reminder</h3>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/50 backdrop-blur-sm p-4 transition-opacity">
+      <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col transform transition-all">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-gray-50/50">
+          <div className="flex items-center gap-2">
+            <div className="p-2 bg-blue-100 text-blue-600 rounded-lg">
+              <Send size={18} />
+            </div>
+            <h3 className="font-semibold text-gray-900 text-lg">Send Message</h3>
+          </div>
+          <button onClick={onClose} className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
             <X size={20} />
           </button>
         </div>
         
-        <div className="p-4 flex-1">
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1">To</label>
-            <input 
-              type="text" 
-              readOnly 
-              value={clientName || `Client #${clientId}`} 
-              className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-500 text-sm"
-            />
+        <div className="p-6 flex-1 overflow-y-auto">
+          <div className="mb-6">
+            <label className="block text-sm font-semibold text-gray-700 mb-1.5">Recipient</label>
+            <div className="px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-700 font-medium flex items-center">
+              <span className="w-2 h-2 rounded-full bg-green-500 mr-2"></span>
+              {clientName || `Client #${clientId}`}
+            </div>
+          </div>
+
+          <div className="mb-6">
+            <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+              <AlignLeft size={16} className="text-gray-400" /> Templates
+            </label>
+            <div className="flex flex-wrap gap-2">
+              <button 
+                onClick={() => applyTemplate("OVERDUE")}
+                className="px-3 py-1.5 text-xs font-medium text-amber-700 bg-amber-50 border border-amber-200 rounded-md hover:bg-amber-100 transition-colors"
+              >
+                Overdue Invoice
+              </button>
+              <button 
+                onClick={() => applyTemplate("CONFIRMATION")}
+                className="px-3 py-1.5 text-xs font-medium text-blue-700 bg-blue-50 border border-blue-200 rounded-md hover:bg-blue-100 transition-colors"
+              >
+                Job Confirmation
+              </button>
+              <button 
+                onClick={() => applyTemplate("FOLLOW_UP")}
+                className="px-3 py-1.5 text-xs font-medium text-gray-700 bg-gray-50 border border-gray-200 rounded-md hover:bg-gray-100 transition-colors"
+              >
+                Follow-up
+              </button>
+            </div>
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Message</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-1.5">Message Content</label>
             <textarea 
-              rows={4}
+              rows={5}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              placeholder="Type your reminder message here..."
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm"
+              placeholder="Type your message or select a template..."
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm resize-none shadow-sm"
             />
           </div>
         </div>
 
-        <div className="px-4 py-3 border-t border-gray-200 bg-gray-50 flex justify-end gap-2">
+        <div className="px-6 py-4 border-t border-gray-100 bg-gray-50 flex justify-end gap-3">
           <button 
             onClick={onClose}
-            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+            disabled={isPending}
+            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 shadow-sm transition-colors"
           >
             Cancel
           </button>
           <button 
             onClick={handleSend}
-            className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700"
+            disabled={isPending || !message.trim()}
+            className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-colors"
           >
-            Send
+            {isPending ? "Sending..." : "Send Message"}
+            {!isPending && <Send size={14} />}
           </button>
         </div>
       </div>
