@@ -11,6 +11,30 @@ const config: Config = {
       fontFamily: {
         sans: ["Inter", "sans-serif"],
       },
+      colors: {
+        primary: {
+          DEFAULT: "#2563eb",
+          hover: "#1d4ed8",
+        },
+        status: {
+          scheduled: {
+            bg: "#dbeafe",
+            text: "#1d4ed8",
+          },
+          pending: {
+            bg: "#fef3c7",
+            text: "#b45309",
+          },
+          completed: {
+            bg: "#dcfce7",
+            text: "#15803d",
+          },
+          overdue: {
+            bg: "#fee2e2",
+            text: "#b91c1c",
+          },
+        },
+      },
     },
   },
   plugins: [],

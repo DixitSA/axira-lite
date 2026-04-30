@@ -21,14 +21,6 @@ const ACTION_ICONS: Record<string, any> = {
   tomorrow_jobs: Calendar,
 };
 
-const PRIORITY_COLORS: Record<number, string> = {
-  1: "border-red-500",
-  2: "border-amber-500",
-  3: "border-amber-400",
-  4: "border-blue-500",
-  5: "border-blue-400",
-  6: "border-gray-400",
-};
 
 export default function ActionCard({
   type,
@@ -39,16 +31,20 @@ export default function ActionCard({
   href,
 }: ActionCardProps) {
   const Icon = ACTION_ICONS[type] || AlertCircle;
-  const borderColor = PRIORITY_COLORS[priority] || "border-gray-200";
+  const priorityColor = priority <= 2 
+    ? "text-status-overdue-text bg-status-overdue-bg" 
+    : priority <= 4 
+    ? "text-status-pending-text bg-status-pending-bg" 
+    : "text-primary bg-primary/5";
 
   return (
     <Link
       href={href}
-      className={`block bg-white border-l-4 ${borderColor} border-t border-r border-b border-gray-200 rounded-r-lg p-4 transition-all hover:bg-gray-50 group`}
+      className="block bg-white border border-gray-200 rounded-lg p-4 transition-all hover:border-blue-300 hover:shadow-sm group"
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <div className="p-2 bg-gray-50 rounded-full text-gray-500 group-hover:text-blue-600 transition-colors">
+          <div className={`p-2.5 rounded-lg ${priorityColor} transition-colors`}>
             <Icon size={20} />
           </div>
           <div>
@@ -63,7 +59,7 @@ export default function ActionCard({
             </p>
           </div>
         </div>
-        <ChevronRight size={18} className="text-gray-400 group-hover:text-blue-600 transition-colors" />
+        <ChevronRight size={18} className="text-gray-400 group-hover:text-primary transition-colors" />
       </div>
     </Link>
   );

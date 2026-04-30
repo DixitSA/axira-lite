@@ -134,13 +134,20 @@ export default function ClientsTable({ clients }: ClientsTableProps) {
                   {client.lastJobAt ? formatRelativeDate(client.lastJobAt) : "Never"}
                 </DataTableCell>
                 <DataTableCell className="text-center">
-                  <div className={needsAttention ? "ring-2 ring-offset-1 ring-red-100 rounded-full inline-block" : ""}>
+                  <div 
+                    title="Health reflects recent job activity. WATCH: >60 days since last job. AT RISK: >90 days. INACTIVE: >180 days."
+                    className={needsAttention ? "ring-2 ring-offset-1 ring-red-100 rounded-full inline-block" : ""}
+                  >
                     <StatusBadge status={healthStatus} />
                   </div>
                 </DataTableCell>
                 <DataTableCell className="text-right">
                   <div className="relative group inline-block text-left">
-                    <button className="p-1 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 focus:outline-none">
+                    <button 
+                      aria-label="Client actions"
+                      aria-haspopup="true"
+                      className="p-2 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all"
+                    >
                       <MoreHorizontal size={18} />
                     </button>
                     <div className="hidden group-hover:block absolute right-0 mt-0 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">

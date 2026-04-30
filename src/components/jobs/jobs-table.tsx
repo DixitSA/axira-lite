@@ -159,7 +159,11 @@ export default function JobsTable({ jobs }: JobsTableProps) {
                 </DataTableCell>
                 <DataTableCell className="text-right">
                   <div className="relative group inline-block text-left">
-                    <button className="p-1 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 focus:outline-none">
+                    <button 
+                      aria-label="Job actions"
+                      aria-haspopup="true"
+                      className="p-2 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all"
+                    >
                       <MoreHorizontal size={18} />
                     </button>
                     <div className="hidden group-hover:block absolute right-0 mt-0 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
@@ -196,7 +200,11 @@ export default function JobsTable({ jobs }: JobsTableProps) {
                         )}
                         {job.status !== "COMPLETED" && job.status !== "CANCELLED" && (
                           <button
-                            onClick={() => handleAction(() => cancelJob(job.id))}
+                            onClick={() => {
+                              if (window.confirm(`Are you sure you want to cancel the job for ${job.client.firstName}? This action cannot be undone.`)) {
+                                handleAction(() => cancelJob(job.id));
+                              }
+                            }}
                             className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
                           >
                             <XCircle size={14} /> Cancel

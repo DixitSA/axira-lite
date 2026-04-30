@@ -8,7 +8,7 @@ export function DataTable({ children }: DataTableProps) {
   return (
     <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
       <div className="overflow-x-auto">
-        <table className="w-full text-left text-sm text-gray-600">
+        <table className="w-full text-left text-sm text-gray-600 tabular-nums">
           {children}
         </table>
       </div>
@@ -22,7 +22,7 @@ interface DataTableHeaderProps {
 
 export function DataTableHeader({ children }: DataTableHeaderProps) {
   return (
-    <thead className="bg-gray-50 border-b border-gray-200 text-gray-900 font-medium text-xs uppercase tracking-wider">
+    <thead className="bg-gray-50/50 border-b border-gray-200 text-gray-500 font-bold text-[10px] uppercase tracking-widest">
       <tr>{children}</tr>
     </thead>
   );

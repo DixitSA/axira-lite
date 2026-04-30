@@ -8,19 +8,19 @@ export const HEALTH_THRESHOLDS = {
 // Status badge colors — full static Tailwind class strings (never template literals)
 export const STATUS_COLORS: Record<string, string> = {
   // Job statuses
-  SCHEDULED: "bg-blue-100 text-blue-700",
-  IN_PROGRESS: "bg-amber-100 text-amber-700",
-  COMPLETED: "bg-green-100 text-green-700",
+  SCHEDULED: "bg-status-scheduled-bg text-status-scheduled-text",
+  IN_PROGRESS: "bg-status-pending-bg text-status-pending-text",
+  COMPLETED: "bg-status-completed-bg text-status-completed-text",
   CANCELLED: "bg-gray-100 text-gray-600",
   // Invoice statuses
   DRAFT: "bg-gray-100 text-gray-600",
-  PENDING: "bg-amber-100 text-amber-700",
-  PAID: "bg-green-100 text-green-700",
-  OVERDUE: "bg-red-100 text-red-700",
+  PENDING: "bg-status-pending-bg text-status-pending-text",
+  PAID: "bg-status-completed-bg text-status-completed-text",
+  OVERDUE: "bg-status-overdue-bg text-status-overdue-text",
   VOID: "bg-gray-100 text-gray-400",
   // Client health statuses
-  ACTIVE: "bg-green-100 text-green-700",
-  WATCH: "bg-amber-100 text-amber-700",
-  AT_RISK: "bg-red-100 text-red-700",
+  ACTIVE: "bg-status-completed-bg text-status-completed-text",
+  WATCH: "bg-status-pending-bg text-status-pending-text",
+  AT_RISK: "bg-status-overdue-bg text-status-overdue-text",
   INACTIVE: "bg-gray-100 text-gray-500",
 };

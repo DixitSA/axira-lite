@@ -44,6 +44,18 @@ export default function JobsFilters() {
     [pathname, router, searchParams]
   );
 
+  // Keyboard shortcut: Press / to focus search
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "/" && document.activeElement?.tagName !== "INPUT" && document.activeElement?.tagName !== "TEXTAREA") {
+        e.preventDefault();
+        document.getElementById("job-search")?.focus();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   const handleStatusToggle = (status: string) => {
     const newStatuses = statuses.includes(status)
       ? statuses.filter((s) => s !== status)
@@ -56,14 +68,16 @@ export default function JobsFilters() {
   return (
     <div className="bg-white p-4 border-b border-gray-200 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
       {/* Search */}
-      <div className="relative max-w-md w-full sm:w-auto">
+      <div className="relative max-w-md w-full flex-1 group">
+        <label htmlFor="job-search" className="sr-only">Search jobs</label>
         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-          <Search className="h-4 w-4 text-gray-400" />
+          <Search className="h-4 w-4 text-gray-400 group-focus-within:text-primary transition-colors" />
         </div>
         <input
+          id="job-search"
           type="text"
-          placeholder="Search client or job title..."
-          className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+          placeholder="Search client or title... (Press /)"
+          className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary sm:text-sm transition-all"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
@@ -77,10 +91,10 @@ export default function JobsFilters() {
             <button
               key={status}
               onClick={() => handleStatusToggle(status)}
-              className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
+              className={`px-3 py-1 rounded-full text-xs font-bold transition-colors uppercase tracking-wider border ${
                 statuses.includes(status)
-                  ? "bg-blue-100 text-blue-700 border border-blue-200"
-                  : "bg-gray-100 text-gray-600 border border-transparent hover:bg-gray-200"
+                  ? "bg-primary text-white border-primary"
+                  : "bg-gray-100 text-gray-500 border-transparent hover:bg-gray-200"
               }`}
             >
               {status.replace("_", " ")}

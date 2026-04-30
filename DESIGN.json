@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-04-30T19:59:00Z",
+  "title": "Design System: Axira Lite",
+  "extensions": {
+    "colorMeta": {
+      "primary": {
+        "role": "primary",
+        "displayName": "Operational Blue",
+        "canonical": "oklch(55% 0.22 254)",
+        "tonalRamp": ["#eff6ff", "#dbeafe", "#bfdbfe", "#93c5fd", "#60a5fa", "#3b82f6", "#2563eb", "#1d4ed8", "#1e40af", "#1e3a8a"]
+      },
+      "neutral-bg": {
+        "role": "neutral",
+        "displayName": "Slate Background",
+        "canonical": "oklch(98% 0.005 254)",
+        "tonalRamp": ["#f9fafb", "#f3f4f6", "#e5e7eb", "#d1d5db", "#9ca3af", "#6b7280", "#4b5563", "#374151", "#1f2937", "#111827"]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display Title",
+        "purpose": "Major page headers and high-level KPIs."
+      },
+      "body": {
+        "displayName": "Body Text",
+        "purpose": "Standard reading text in tables and descriptions."
+      }
+    },
+    "shadows": [
+      {
+        "name": "overlay",
+        "value": "0 10px 15px -3px rgb(0 0 0 / 0.1)",
+        "purpose": "Separating modals and the sidebar from the background."
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The main action button for the dashboard.",
+      "html": "<button class=\"ds-btn-primary\">CONTINUE</button>",
+      "css": ".ds-btn-primary { background: #2563eb; color: #fff; padding: 8px 16px; border-radius: 8px; font-weight: 500; font-family: 'Inter', sans-serif; border: none; transition: background 0.2s; cursor: pointer; } .ds-btn-primary:hover { background: #1d4ed8; }"
+    },
+    {
+      "name": "Status Badge",
+      "kind": "chip",
+      "description": "Indicator for job and invoice status.",
+      "html": "<span class=\"ds-badge ds-badge-scheduled\">SCHEDULED</span>",
+      "css": ".ds-badge { padding: 2px 8px; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; font-family: 'Inter', sans-serif; } .ds-badge-scheduled { background: #dbeafe; color: #1d4ed8; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Precision Cockpit",
+    "overview": "Axira Lite is a high-density, functional environment designed for operational speed. It rejects the 'softness' of modern consumer SaaS in favor of a rigid, geometric aesthetic.",
+    "keyCharacteristics": [
+      "High information density without clutter",
+      "Rigid 8px grid alignment",
+      "Zero gradients or shadows at rest",
+      "Semantic color use"
+    ],
+    "rules": [
+      {
+        "name": "The Rarity Rule",
+        "body": "The primary accent is used on ≤10% of any given screen.",
+        "section": "colors"
+      },
+      {
+        "name": "The Surface Separation Rule",
+        "body": "Overlays like Modals and the Sidebar use subtle shadows to separate from the background.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do use strict 8px spacing multiples for all layout gaps.",
+      "Do ensure all text has a contrast ratio of at least 4.5:1.",
+      "Do keep information density high in data tables."
+    ],
+    "donts": [
+      "Don't use border-left greater than 1px as a colored stripe on cards.",
+      "Don't use background gradients or text gradients.",
+      "Don't add shadows to buttons or standard dashboard cards.",
+      "Don't use em dashes in UI copy."
+    ]
+  }
+}

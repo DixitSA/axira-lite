@@ -135,7 +135,7 @@ export default function InvoicesTable({ invoices }: InvoicesTableProps) {
               return (
                 <DataTableRow 
                   key={invoice.id} 
-                  className={isOverdue ? "bg-red-50/50 hover:bg-red-50 border-l-4 border-l-red-500" : "border-l-4 border-l-transparent"}
+                  className={isOverdue ? "bg-red-50/50 hover:bg-red-100/50" : ""}
                 >
                   <DataTableCell className="font-medium text-gray-900">
                     {invoice.invoiceNumber}
@@ -165,7 +165,11 @@ export default function InvoicesTable({ invoices }: InvoicesTableProps) {
                   </DataTableCell>
                   <DataTableCell className="text-right">
                     <div className="relative group inline-block text-left">
-                      <button className="p-1 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 focus:outline-none">
+                      <button 
+                        aria-label="Invoice actions"
+                        aria-haspopup="true"
+                        className="p-2 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all"
+                      >
                         <MoreHorizontal size={18} />
                       </button>
                       <div className="hidden group-hover:block absolute right-0 mt-0 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
