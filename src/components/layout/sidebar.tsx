@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
+import { UserButton } from "@clerk/nextjs";
 import {
   LayoutDashboard,
   Briefcase,
@@ -101,7 +102,7 @@ export default function Sidebar() {
           })}
         </nav>
 
-        <div className="p-3 md:p-2 border-t border-gray-200">
+        <div className="p-3 md:p-2 border-t border-gray-200 space-y-2">
           <Link
             href="/help"
             className="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium text-gray-500 hover:text-gray-900 hover:bg-gray-50 transition-colors"
@@ -111,6 +112,16 @@ export default function Sidebar() {
             </div>
             <span className="md:hidden lg:inline">Help & Docs</span>
           </Link>
+          <div className="flex items-center gap-3 px-3 py-2">
+            <UserButton
+              appearance={{
+                elements: {
+                  avatarBox: "w-7 h-7",
+                },
+              }}
+            />
+            <span className="md:hidden lg:inline text-sm text-gray-600 font-medium">Account</span>
+          </div>
         </div>
       </aside>
     </>

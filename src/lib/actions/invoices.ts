@@ -1,6 +1,7 @@
 "use server";
 
 import { db } from "@/lib/db";
+import { getAuthenticatedUser } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 
 /**
@@ -28,12 +29,14 @@ async function updateClientOutstandingBalance(clientId: number) {
 }
 
 export async function markInvoicePaid(invoiceId: number) {
-  const invoice = await db.invoice.findUnique({
-    where: { id: invoiceId },
+  const { businessId } = await getAuthenticatedUser();
+
+  const invoice = await db.invoice.findFirst({
+    where: { id: invoiceId, businessId },
     select: { amount: true, clientId: true, status: true },
   });
 
-  if (!invoice) throw new Error("Invoice not found");
+  if (!invoice) throw new Error("Invoice not found or access denied");
   if (invoice.status === "PAID") throw new Error("Invoice is already paid");
   if (invoice.status === "VOID") throw new Error("Cannot pay a voided invoice");
 
@@ -73,12 +76,14 @@ export async function markInvoicePaid(invoiceId: number) {
 }
 
 export async function voidInvoice(invoiceId: number) {
-  const invoice = await db.invoice.findUnique({
-    where: { id: invoiceId },
+  const { businessId } = await getAuthenticatedUser();
+
+  const invoice = await db.invoice.findFirst({
+    where: { id: invoiceId, businessId },
     select: { clientId: true, status: true },
   });
 
-  if (!invoice) throw new Error("Invoice not found");
+  if (!invoice) throw new Error("Invoice not found or access denied");
   if (invoice.status === "VOID") throw new Error("Invoice is already voided");
 
   await db.$transaction(async (tx) => {

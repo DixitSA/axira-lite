@@ -1,9 +1,16 @@
 "use server";
 
 import { db } from "@/lib/db";
+import { getAuthenticatedUser } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 
 export async function markJobInProgress(jobId: number) {
+  const { businessId } = await getAuthenticatedUser();
+  
+  // Verify ownership
+  const job = await db.job.findFirst({ where: { id: jobId, businessId } });
+  if (!job) throw new Error("Job not found or access denied");
+
   await db.job.update({
     where: { id: jobId },
     data: { status: "IN_PROGRESS" },
@@ -14,6 +21,11 @@ export async function markJobInProgress(jobId: number) {
 }
 
 export async function markJobComplete(jobId: number) {
+  const { businessId } = await getAuthenticatedUser();
+  
+  const job = await db.job.findFirst({ where: { id: jobId, businessId } });
+  if (!job) throw new Error("Job not found or access denied");
+
   await db.job.update({
     where: { id: jobId },
     data: { 
@@ -27,12 +39,14 @@ export async function markJobComplete(jobId: number) {
 }
 
 export async function createInvoiceForJob(jobId: number) {
-  const job = await db.job.findUnique({
-    where: { id: jobId },
+  const { businessId } = await getAuthenticatedUser();
+
+  const job = await db.job.findFirst({
+    where: { id: jobId, businessId },
     include: { client: true },
   });
 
-  if (!job) throw new Error("Job not found");
+  if (!job) throw new Error("Job not found or access denied");
   if (job.status !== "COMPLETED") throw new Error("Job must be completed to invoice");
   if (job.invoicedAt) throw new Error("Job already invoiced");
 
@@ -50,7 +64,7 @@ export async function createInvoiceForJob(jobId: number) {
   await db.$transaction([
     db.invoice.create({
       data: {
-        businessId: job.businessId,
+        businessId,
         clientId: job.clientId,
         jobId: job.id,
         invoiceNumber,
@@ -72,6 +86,11 @@ export async function createInvoiceForJob(jobId: number) {
 }
 
 export async function cancelJob(jobId: number) {
+  const { businessId } = await getAuthenticatedUser();
+  
+  const job = await db.job.findFirst({ where: { id: jobId, businessId } });
+  if (!job) throw new Error("Job not found or access denied");
+
   await db.job.update({
     where: { id: jobId },
     data: { status: "CANCELLED" },

@@ -9,6 +9,16 @@ datasource db {
   directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
+model User {
+  id         Int      @id @default(autoincrement())
+  clerkId    String   @unique
+  businessId Int
+  role       String   @default("OWNER")
+  createdAt  DateTime @default(now())
+
+  business Business @relation(fields: [businessId], references: [id])
+}
+
 model Business {
   id           Int      @id @default(autoincrement())
   name         String
@@ -19,6 +29,7 @@ model Business {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
+  users           User[]
   clients         Client[]
   jobs            Job[]
   invoices        Invoice[]

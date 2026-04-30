@@ -60,7 +60,6 @@ export default function ComposeModal({
     startTransition(async () => {
       try {
         await sendReminder({
-          businessId: 1, // Single hardcoded business context
           clientId,
           invoiceId,
           jobId,

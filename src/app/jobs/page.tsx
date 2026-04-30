@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import { getAuthenticatedUser } from "@/lib/auth";
 import PageHeader from "@/components/layout/page-header";
 import JobsFilters from "@/components/jobs/jobs-filters";
 import JobsTable from "@/components/jobs/jobs-table";
@@ -9,6 +10,7 @@ export default async function JobsPage({
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
+  const { businessId } = await getAuthenticatedUser();
   const params = await searchParams;
   
   const search = typeof params.search === "string" ? params.search : undefined;
@@ -25,7 +27,7 @@ export default async function JobsPage({
   const sortDir = typeof params.dir === "string" ? params.dir : "desc";
 
   // Build the Prisma where clause
-  const where: Prisma.JobWhereInput = {};
+  const where: Prisma.JobWhereInput = { businessId };
 
   if (search) {
     where.OR = [

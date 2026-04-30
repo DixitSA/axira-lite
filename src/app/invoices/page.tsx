@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import { getAuthenticatedUser } from "@/lib/auth";
 import PageHeader from "@/components/layout/page-header";
 import InvoicesFilters from "@/components/invoices/invoices-filters";
 import InvoicesTable from "@/components/invoices/invoices-table";
@@ -10,6 +11,7 @@ export default async function InvoicesPage({
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
+  const { businessId } = await getAuthenticatedUser();
   const params = await searchParams;
   
   const search = typeof params.search === "string" ? params.search : undefined;
@@ -20,7 +22,7 @@ export default async function InvoicesPage({
   const sortDir = typeof params.dir === "string" ? params.dir : "asc";
 
   // Build the Prisma where clause
-  const where: Prisma.InvoiceWhereInput = {};
+  const where: Prisma.InvoiceWhereInput = { businessId };
 
   if (search) {
     where.OR = [
@@ -56,7 +58,7 @@ export default async function InvoicesPage({
 
   // Calculate outstanding amount across ALL unpaid invoices (not just the filtered ones)
   const allUnpaidInvoices = await db.invoice.findMany({
-    where: { status: { in: ["PENDING", "OVERDUE"] } },
+    where: { businessId, status: { in: ["PENDING", "OVERDUE"] } },
     select: { amount: true, paidAmount: true },
   });
   const outstandingAmount = allUnpaidInvoices.reduce(
