@@ -16,7 +16,7 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 // Enable WAL mode for SQLite to prevent SQLITE_BUSY errors
-void db.$executeRawUnsafe("PRAGMA journal_mode=WAL;").catch(() => {
+void db.$queryRawUnsafe("PRAGMA journal_mode=WAL;").catch(() => {
   // WAL mode pragma may fail silently on some environments — not critical
 });
 
