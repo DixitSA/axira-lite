@@ -15,11 +15,6 @@ if (process.env.NODE_ENV !== "production") {
   globalForPrisma.prisma = db;
 }
 
-// Enable WAL mode for SQLite to prevent SQLITE_BUSY errors (Dev only)
-if (process.env.NODE_ENV !== "production") {
-  void db.$queryRawUnsafe("PRAGMA journal_mode=WAL;").catch(() => {
-    // WAL mode pragma may fail silently — not critical
-  });
-}
+// Postgres handles concurrency natively.
 
 export { db };
