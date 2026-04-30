@@ -15,9 +15,11 @@ if (process.env.NODE_ENV !== "production") {
   globalForPrisma.prisma = db;
 }
 
-// Enable WAL mode for SQLite to prevent SQLITE_BUSY errors
-void db.$queryRawUnsafe("PRAGMA journal_mode=WAL;").catch(() => {
-  // WAL mode pragma may fail silently on some environments — not critical
-});
+// Enable WAL mode for SQLite to prevent SQLITE_BUSY errors (Dev only)
+if (process.env.NODE_ENV !== "production") {
+  void db.$queryRawUnsafe("PRAGMA journal_mode=WAL;").catch(() => {
+    // WAL mode pragma may fail silently — not critical
+  });
+}
 
 export { db };
