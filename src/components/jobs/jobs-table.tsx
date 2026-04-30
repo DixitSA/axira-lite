@@ -1,6 +1,6 @@
 "use client";
 
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { formatCurrency, formatDate } from "@/lib/utils/format";
 import StatusBadge from "@/components/ui/status-badge";
@@ -20,7 +20,8 @@ import {
   XCircle,
   ArrowUpDown,
   ArrowUp,
-  ArrowDown
+  ArrowDown,
+  Bell
 } from "lucide-react";
 import { 
   markJobInProgress, 
@@ -28,6 +29,7 @@ import {
   createInvoiceForJob, 
   cancelJob 
 } from "@/lib/actions/jobs";
+import ComposeModal from "@/components/reminders/compose-modal";
 
 // Defined locally to avoid needing complex type exports from Prisma right now
 type JobWithClient = any; 
@@ -41,6 +43,10 @@ export default function JobsTable({ jobs }: JobsTableProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
+
+  // Reminder Modal State
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedContext, setSelectedContext] = useState<any>(null);
 
   const sortField = searchParams.get("sort") || "scheduledStart";
   const sortDir = searchParams.get("dir") || "desc";
@@ -72,6 +78,18 @@ export default function JobsTable({ jobs }: JobsTableProps) {
         alert(error instanceof Error ? error.message : "Action failed");
       }
     });
+  };
+
+  const openReminder = (job: any) => {
+    setSelectedContext({ 
+      clientId: job.clientId, 
+      clientName: `${job.client.firstName} ${job.client.lastName}`,
+      jobId: job.id,
+      amount: job.finalAmount || job.quotedAmount,
+      serviceType: job.title,
+      appointmentDate: job.scheduledStart
+    });
+    setIsModalOpen(true);
   };
 
   if (!jobs?.length) {
@@ -162,6 +180,12 @@ export default function JobsTable({ jobs }: JobsTableProps) {
                             <CheckCircle size={14} className="text-green-500" /> Mark Complete
                           </button>
                         )}
+                        <button
+                          onClick={() => openReminder(job)}
+                          className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+                        >
+                          <Bell size={14} className="text-blue-500" /> Send Reminder
+                        </button>
                         {job.status === "COMPLETED" && !job.invoicedAt && (
                           <button
                             onClick={() => handleAction(() => createInvoiceForJob(job.id))}
@@ -187,6 +211,17 @@ export default function JobsTable({ jobs }: JobsTableProps) {
           })}
         </DataTableBody>
       </DataTable>
+
+      <ComposeModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        clientId={selectedContext?.clientId}
+        clientName={selectedContext?.clientName}
+        jobId={selectedContext?.jobId}
+        amount={selectedContext?.amount}
+        serviceType={selectedContext?.serviceType}
+        appointmentDate={selectedContext?.appointmentDate}
+      />
     </div>
   );
 }
