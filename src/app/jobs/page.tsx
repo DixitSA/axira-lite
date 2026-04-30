@@ -3,6 +3,7 @@ import { getAuthenticatedUser } from "@/lib/auth";
 import PageHeader from "@/components/layout/page-header";
 import JobsFilters from "@/components/jobs/jobs-filters";
 import JobsTable from "@/components/jobs/jobs-table";
+import AddJobButton from "@/components/jobs/add-job-button";
 import { Prisma } from "@prisma/client";
 
 export default async function JobsPage({
@@ -70,18 +71,20 @@ export default async function JobsPage({
 
   const totalJobs = await db.job.count({ where });
 
+  // Fetch clients for the job form dropdown
+  const clients = await db.client.findMany({
+    where: { businessId },
+    select: { id: true, firstName: true, lastName: true },
+    orderBy: { firstName: "asc" },
+  });
+
   return (
     <div className="flex flex-col min-h-screen">
       <PageHeader 
         title="Jobs" 
         description={`${totalJobs} total jobs`}
       >
-        <button 
-          disabled
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          Add Job
-        </button>
+        <AddJobButton clients={clients} />
       </PageHeader>
       
       <div className="p-6">

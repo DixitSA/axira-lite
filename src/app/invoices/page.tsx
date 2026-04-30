@@ -3,6 +3,7 @@ import { getAuthenticatedUser } from "@/lib/auth";
 import PageHeader from "@/components/layout/page-header";
 import InvoicesFilters from "@/components/invoices/invoices-filters";
 import InvoicesTable from "@/components/invoices/invoices-table";
+import AddInvoiceButton from "@/components/invoices/add-invoice-button";
 import { Prisma } from "@prisma/client";
 import { formatCurrency } from "@/lib/utils/format";
 
@@ -66,6 +67,13 @@ export default async function InvoicesPage({
     0
   );
 
+  // Fetch clients for the invoice form dropdown
+  const clients = await db.client.findMany({
+    where: { businessId },
+    select: { id: true, firstName: true, lastName: true },
+    orderBy: { firstName: "asc" },
+  });
+
   return (
     <div className="flex flex-col min-h-screen">
       <PageHeader 
@@ -77,12 +85,7 @@ export default async function InvoicesPage({
             <p className="text-sm text-gray-500 font-medium">Total Outstanding</p>
             <p className="text-xl font-bold text-gray-900">{formatCurrency(outstandingAmount)}</p>
           </div>
-          <button 
-            disabled
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            Create Invoice
-          </button>
+          <AddInvoiceButton clients={clients} />
         </div>
       </PageHeader>
       

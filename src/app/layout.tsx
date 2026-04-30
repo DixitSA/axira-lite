@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
+import { ToastContainer } from "@/components/ui/toast";
 import "./globals.css";
 import Sidebar from "@/components/layout/sidebar";
 
@@ -26,6 +27,7 @@ export default function RootLayout({
               {children}
             </main>
           </div>
+          <ToastContainer />
         </body>
       </html>
     </ClerkProvider>

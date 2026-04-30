@@ -3,6 +3,7 @@ import { getAuthenticatedUser } from "@/lib/auth";
 import PageHeader from "@/components/layout/page-header";
 import ClientsFilters from "@/components/clients/clients-filters";
 import ClientsTable from "@/components/clients/clients-table";
+import AddClientButton from "@/components/clients/add-client-button";
 import { Prisma } from "@prisma/client";
 
 export default async function ClientsPage({
@@ -55,12 +56,7 @@ export default async function ClientsPage({
         title="Clients" 
         description={`${totalClients} clients`}
       >
-        <button 
-          disabled
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          Add Client
-        </button>
+        <AddClientButton />
       </PageHeader>
       
       <div className="p-6">
