@@ -1,12 +1,16 @@
 "use client";
 
+import { useState } from "react";
 import { formatCurrency } from "@/lib/utils/format";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 interface RevenueChartProps {
   monthlyData: { month: string; revenue: number; outstanding: number }[];
 }
 
 export default function RevenueChart({ monthlyData }: RevenueChartProps) {
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
   if (!monthlyData.length) {
     return (
       <div className="bg-white border border-gray-200 rounded-lg p-12 text-center">
@@ -20,19 +24,31 @@ export default function RevenueChart({ monthlyData }: RevenueChartProps) {
   return (
     <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
       <div className="px-5 py-3 border-b border-gray-100 bg-gray-50/50 flex items-center justify-between">
-        <h2 className="text-xs font-bold text-gray-400 uppercase tracking-[0.2em]">Cash Flow Radar</h2>
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-1.5">
-            <div className="w-2 h-2 rounded-full bg-status-revenue" />
-            <span className="text-[10px] font-bold text-gray-400 uppercase">Collected</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <div className="w-2 h-2 rounded-full bg-status-outstanding" />
-            <span className="text-[10px] font-bold text-gray-400 uppercase">Outstanding</span>
-          </div>
+        <div className="flex items-center gap-3">
+          <h2 className="text-xs font-bold text-gray-400 uppercase tracking-[0.2em]">Cash Flow Radar</h2>
+          <button 
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            className="p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded transition-all"
+            title={isCollapsed ? "Expand" : "Collapse"}
+          >
+            {isCollapsed ? <ChevronDown size={14} /> : <ChevronUp size={14} />}
+          </button>
         </div>
+        {!isCollapsed && (
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-1.5">
+              <div className="w-2 h-2 rounded-full bg-status-revenue" />
+              <span className="text-[10px] font-bold text-gray-400 uppercase">Collected</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <div className="w-2 h-2 rounded-full bg-status-outstanding" />
+              <span className="text-[10px] font-bold text-gray-400 uppercase">Outstanding</span>
+            </div>
+          </div>
+        )}
       </div>
-      <div className="p-5">
+      {!isCollapsed && (
+        <div className="p-5 animate-slide-down">
         <div className="flex items-end gap-2 h-48">
           {monthlyData.map((d, i) => {
             const revHeight = (d.revenue / maxValue) * 100;
@@ -71,7 +87,7 @@ export default function RevenueChart({ monthlyData }: RevenueChartProps) {
             </p>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

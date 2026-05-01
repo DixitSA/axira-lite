@@ -5,6 +5,7 @@ import KpiCard from "@/components/ui/kpi-card";
 import ActionCard from "@/components/ui/action-card";
 import StatusBadge from "@/components/ui/status-badge";
 import RevenueChart from "@/components/dashboard/revenue-chart";
+import DashboardSnapshots from "@/components/dashboard/dashboard-snapshots";
 import { 
   formatCurrency, 
   formatTime, 
@@ -22,6 +23,10 @@ import Link from "next/link";
 
 export default async function DashboardPage() {
   const { businessId } = await getAuthenticatedUser();
+  const business = await db.business.findUnique({
+    where: { id: businessId },
+    select: { name: true },
+  });
 
   const now = new Date();
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -270,82 +275,12 @@ export default async function DashboardPage() {
         </section>
 
         {/* Snapshots - Asymmetric Density */}
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-          {/* Jobs Snapshot (Relaxed) */}
-          <section aria-labelledby="upcoming-schedule-title" className="lg:col-span-3 bg-white border border-gray-200 rounded-lg overflow-hidden flex flex-col">
-            <div className="px-5 py-3 border-b border-gray-100 bg-gray-50/50 flex items-center justify-between">
-              <h2 id="upcoming-schedule-title" className="text-xs font-bold text-gray-400 uppercase tracking-[0.2em]">Upcoming Schedule</h2>
-              <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">{[...todayJobs, ...tomorrowJobs].length} Active</span>
-            </div>
-            <div className="divide-y divide-gray-100 flex-1">
-              {[...todayJobs, ...tomorrowJobs].length > 0 ? (
-                [...todayJobs, ...tomorrowJobs].map((job) => (
-                  <Link 
-                    key={job.id} 
-                    href={`/jobs/${job.id}`}
-                    className="p-5 flex items-center justify-between hover:bg-gray-50 transition-colors group border-b last:border-0 border-gray-100"
-                  >
-                    <div className="flex flex-col gap-1">
-                      <span className="text-base font-bold text-gray-900 group-hover:text-blue-600 transition-colors tracking-tight">
-                        {job.client.firstName} {job.client.lastName}
-                      </span>
-                      <div className="flex items-center gap-3">
-                         <span className="text-xs font-bold text-blue-600 tabular-nums uppercase">{formatTime(job.scheduledStart)}</span>
-                         <span className="h-1 w-1 rounded-full bg-gray-300" />
-                         <span className="text-xs font-medium text-gray-500">{job.title}</span>
-                      </div>
-                    </div>
-                    <StatusBadge status={job.status} />
-                  </Link>
-                ))
-              ) : (
-                <div className="p-12 text-center">
-                  <p className="text-xs font-bold text-gray-300 uppercase tracking-widest">No appointments scheduled</p>
-                </div>
-              )}
-            </div>
-          </section>
-
-          {/* Invoices Snapshot (Dense / Industrial) */}
-          <section aria-labelledby="flagged-accounts-title" className="lg:col-span-2 bg-white border border-gray-200 rounded-lg overflow-hidden flex flex-col">
-            <div className="px-5 py-3 border-b border-gray-100 bg-gray-50/50 flex items-center justify-between">
-              <h2 id="flagged-accounts-title" className="text-xs font-bold text-gray-400 uppercase tracking-[0.2em]">Flagged Accounts</h2>
-              <div className="flex items-center gap-2">
-                <div className="h-1.5 w-1.5 rounded-full bg-red-500" />
-                <span className="text-[10px] font-bold text-red-600 uppercase">{overdueInvoicesList.length} Overdue</span>
-              </div>
-            </div>
-            <div className="divide-y divide-gray-100 flex-1">
-              {overdueInvoicesList.length > 0 ? (
-                overdueInvoicesList.map((inv) => (
-                  <Link 
-                    key={inv.id} 
-                    href={`/invoices/${inv.id}`}
-                    className="p-3 px-5 flex items-center justify-between hover:bg-red-50/30 transition-colors group border-b last:border-0 border-gray-100"
-                  >
-                    <div className="flex flex-col">
-                      <span className="text-xs font-bold text-gray-900">
-                        {inv.client.firstName} {inv.client.lastName}
-                      </span>
-                      <span className="text-[10px] font-bold text-red-500 uppercase tracking-tight">
-                        {formatRelativeDate(inv.dueDate)}
-                      </span>
-                    </div>
-                    <div className="text-right">
-                      <span className="text-sm font-bold text-red-600 tabular-nums tracking-tighter">
-                        {formatCurrency(inv.amount - inv.paidAmount)}
-                      </span>
-                    </div>
-                  </Link>
-                ))
-              ) : (
-                <div className="p-12 text-center">
-                  <p className="text-xs font-bold text-gray-300 uppercase tracking-widest">Accounts current</p>
-                </div>
-              )}
-            </div>
-          </section>
-        </div>
+        <DashboardSnapshots 
+          todayJobs={todayJobs}
+          tomorrowJobs={tomorrowJobs}
+          overdueInvoices={overdueInvoicesList}
+          businessName={business?.name || "Axira Lite"}
+        />
       </div>
     </div>
   );
