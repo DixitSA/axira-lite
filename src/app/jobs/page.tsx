@@ -32,9 +32,10 @@ export default async function JobsPage({
 
   if (search) {
     where.OR = [
-      { title: { contains: search } },
-      { client: { firstName: { contains: search } } },
-      { client: { lastName: { contains: search } } },
+      { title: { contains: search, mode: "insensitive" } },
+      { client: { firstName: { contains: search, mode: "insensitive" } } },
+      { client: { lastName: { contains: search, mode: "insensitive" } } },
+      { client: { companyName: { contains: search, mode: "insensitive" } } },
     ];
   }
 

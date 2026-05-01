@@ -27,9 +27,10 @@ export default async function InvoicesPage({
 
   if (search) {
     where.OR = [
-      { invoiceNumber: { contains: search } },
-      { client: { firstName: { contains: search } } },
-      { client: { lastName: { contains: search } } },
+      { invoiceNumber: { contains: search, mode: "insensitive" } },
+      { client: { firstName: { contains: search, mode: "insensitive" } } },
+      { client: { lastName: { contains: search, mode: "insensitive" } } },
+      { client: { companyName: { contains: search, mode: "insensitive" } } },
     ];
   }
 

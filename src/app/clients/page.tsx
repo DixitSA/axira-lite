@@ -24,9 +24,10 @@ export default async function ClientsPage({
 
   if (search) {
     where.OR = [
-      { firstName: { contains: search } },
-      { lastName: { contains: search } },
-      { phone: { contains: search } },
+      { firstName: { contains: search, mode: "insensitive" } },
+      { lastName: { contains: search, mode: "insensitive" } },
+      { companyName: { contains: search, mode: "insensitive" } },
+      { phone: { contains: search, mode: "insensitive" } },
     ];
   }
 
