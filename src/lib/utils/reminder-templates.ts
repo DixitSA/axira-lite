@@ -17,21 +17,22 @@ export const REMINDER_TEMPLATES = {
 
 export function interpolateTemplate(template: string, data: TemplateData): string {
   let result = template
-    .replace(/{firstName}/g, data.firstName || "")
+    .replace(/{firstName}/g, data.firstName || "there")
     .replace(/{businessName}/g, data.businessName || "Axira Lite");
 
-  if (data.amount !== undefined) {
-    result = result.replace(/{amount}/g, formatCurrency(data.amount));
-  }
-  if (data.dueDate) {
-    result = result.replace(/{dueDate}/g, formatDate(data.dueDate));
-  }
-  if (data.serviceType) {
-    result = result.replace(/{serviceType}/g, data.serviceType);
-  }
-  if (data.appointmentDate) {
-    result = result.replace(/{appointmentDate}/g, formatDate(data.appointmentDate));
-  }
+  // Handle amount with fallback
+  const amountStr = data.amount !== undefined ? formatCurrency(data.amount) : "$0.00";
+  result = result.replace(/{amount}/g, amountStr);
+
+  // Handle dates with fallback
+  const dueDateStr = data.dueDate ? formatDate(data.dueDate) : "soon";
+  result = result.replace(/{dueDate}/g, dueDateStr);
+
+  const apptDateStr = data.appointmentDate ? formatDate(data.appointmentDate) : "your next visit";
+  result = result.replace(/{appointmentDate}/g, apptDateStr);
+
+  // Handle service type
+  result = result.replace(/{serviceType}/g, data.serviceType || "service");
 
   return result;
 }
