@@ -18,7 +18,7 @@ export default function KpiCard({
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-5 group hover:border-blue-500 transition-colors flex flex-col justify-between h-full">
       <div className="flex justify-between items-start mb-4">
-        <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest leading-none">
+        <span className="text-xs font-bold text-gray-500 uppercase tracking-widest leading-none">
           {label}
         </span>
         {Icon && (

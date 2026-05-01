@@ -91,25 +91,30 @@ export default async function DashboardPage() {
 
   // Revenue Chart: Last 6 months of revenue vs outstanding
   const monthlyData = [];
+  const sixMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 5, 1);
+  
+  const allInvoices = await db.invoice.findMany({
+    where: { businessId, issueDate: { gte: sixMonthsAgo } },
+    select: { amount: true, paidAmount: true, paidDate: true, issueDate: true },
+  });
+
   for (let i = 5; i >= 0; i--) {
     const monthStart = new Date(now.getFullYear(), now.getMonth() - i, 1);
     const monthEnd = new Date(now.getFullYear(), now.getMonth() - i + 1, 0, 23, 59, 59);
     const monthLabel = monthStart.toLocaleString("en-US", { month: "short" });
 
-    const paidAgg = await db.invoice.aggregate({
-      _sum: { paidAmount: true },
-      where: { businessId, paidDate: { gte: monthStart, lte: monthEnd } },
-    });
+    const monthPaid = allInvoices
+      .filter(inv => inv.paidDate && inv.paidDate >= monthStart && inv.paidDate <= monthEnd)
+      .reduce((sum, inv) => sum + inv.paidAmount, 0);
 
-    const outstandingAgg = await db.invoice.findMany({
-      where: { businessId, status: { in: ["PENDING", "OVERDUE"] }, issueDate: { gte: monthStart, lte: monthEnd } },
-      select: { amount: true, paidAmount: true },
-    });
+    const monthOutstanding = allInvoices
+      .filter(inv => inv.issueDate >= monthStart && inv.issueDate <= monthEnd && (inv.amount - inv.paidAmount) > 0)
+      .reduce((sum, inv) => sum + (inv.amount - inv.paidAmount), 0);
 
     monthlyData.push({
       month: monthLabel,
-      revenue: paidAgg._sum.paidAmount || 0,
-      outstanding: outstandingAgg.reduce((s, inv) => s + (inv.amount - inv.paidAmount), 0),
+      revenue: monthPaid,
+      outstanding: monthOutstanding,
     });
   }
 
@@ -245,9 +250,9 @@ export default async function DashboardPage() {
         <RevenueChart monthlyData={monthlyData} />
 
         {/* Action Center */}
-        <section>
+        <section aria-labelledby="action-center-title">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">Action Center</h2>
+            <h2 id="action-center-title" className="text-xs font-bold text-gray-400 uppercase tracking-[0.2em]">Action Center</h2>
             <span className="h-px flex-1 bg-gray-200/60 ml-6" />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -266,15 +271,19 @@ export default async function DashboardPage() {
         {/* Snapshots - Asymmetric Density */}
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
           {/* Jobs Snapshot (Relaxed) */}
-          <section className="lg:col-span-3 bg-white border border-gray-200 rounded-lg overflow-hidden flex flex-col">
+          <section aria-labelledby="upcoming-schedule-title" className="lg:col-span-3 bg-white border border-gray-200 rounded-lg overflow-hidden flex flex-col">
             <div className="px-5 py-3 border-b border-gray-100 bg-gray-50/50 flex items-center justify-between">
-              <h2 className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">Upcoming Schedule</h2>
+              <h2 id="upcoming-schedule-title" className="text-xs font-bold text-gray-400 uppercase tracking-[0.2em]">Upcoming Schedule</h2>
               <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">{[...todayJobs, ...tomorrowJobs].length} Active</span>
             </div>
             <div className="divide-y divide-gray-100 flex-1">
               {[...todayJobs, ...tomorrowJobs].length > 0 ? (
                 [...todayJobs, ...tomorrowJobs].map((job) => (
-                  <div key={job.id} className="p-5 flex items-center justify-between hover:bg-gray-50 transition-colors cursor-pointer group">
+                  <Link 
+                    key={job.id} 
+                    href={`/jobs/${job.id}`}
+                    className="p-5 flex items-center justify-between hover:bg-gray-50 transition-colors group border-b last:border-0 border-gray-100"
+                  >
                     <div className="flex flex-col gap-1">
                       <span className="text-base font-bold text-gray-900 group-hover:text-blue-600 transition-colors tracking-tight">
                         {job.client.firstName} {job.client.lastName}
@@ -286,7 +295,7 @@ export default async function DashboardPage() {
                       </div>
                     </div>
                     <StatusBadge status={job.status} />
-                  </div>
+                  </Link>
                 ))
               ) : (
                 <div className="p-12 text-center">
@@ -297,9 +306,9 @@ export default async function DashboardPage() {
           </section>
 
           {/* Invoices Snapshot (Dense / Industrial) */}
-          <section className="lg:col-span-2 bg-white border border-gray-200 rounded-lg overflow-hidden flex flex-col">
+          <section aria-labelledby="flagged-accounts-title" className="lg:col-span-2 bg-white border border-gray-200 rounded-lg overflow-hidden flex flex-col">
             <div className="px-5 py-3 border-b border-gray-100 bg-gray-50/50 flex items-center justify-between">
-              <h2 className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">Flagged Accounts</h2>
+              <h2 id="flagged-accounts-title" className="text-xs font-bold text-gray-400 uppercase tracking-[0.2em]">Flagged Accounts</h2>
               <div className="flex items-center gap-2">
                 <div className="h-1.5 w-1.5 rounded-full bg-red-500" />
                 <span className="text-[10px] font-bold text-red-600 uppercase">{overdueInvoicesList.length} Overdue</span>
@@ -308,7 +317,11 @@ export default async function DashboardPage() {
             <div className="divide-y divide-gray-100 flex-1">
               {overdueInvoicesList.length > 0 ? (
                 overdueInvoicesList.map((inv) => (
-                  <div key={inv.id} className="p-3 px-5 flex items-center justify-between hover:bg-red-50/30 transition-colors cursor-pointer group">
+                  <Link 
+                    key={inv.id} 
+                    href={`/invoices/${inv.id}`}
+                    className="p-3 px-5 flex items-center justify-between hover:bg-red-50/30 transition-colors group border-b last:border-0 border-gray-100"
+                  >
                     <div className="flex flex-col">
                       <span className="text-xs font-bold text-gray-900">
                         {inv.client.firstName} {inv.client.lastName}
@@ -322,7 +335,7 @@ export default async function DashboardPage() {
                         {formatCurrency(inv.amount - inv.paidAmount)}
                       </span>
                     </div>
-                  </div>
+                  </Link>
                 ))
               ) : (
                 <div className="p-12 text-center">

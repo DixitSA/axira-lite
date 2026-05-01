@@ -33,6 +33,8 @@ const config: Config = {
             bg: "#fee2e2",
             text: "#b91c1c",
           },
+          revenue: "#3b82f6",
+          outstanding: "#f87171",
         },
       },
     },
