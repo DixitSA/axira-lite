@@ -111,28 +111,28 @@ export default function JobsTable({ jobs }: JobsTableProps) {
       <DataTable>
         <DataTableHeader>
           <DataTableCell isHeader className="w-[20%] cursor-pointer hover:bg-gray-100 transition-colors" >
-            <div className="flex items-center" onClick={() => handleSort("client")}>
+            <div className="flex items-center text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]" onClick={() => handleSort("client")}>
               Client <SortIcon field="client" />
             </div>
           </DataTableCell>
           <DataTableCell isHeader className="w-[25%] cursor-pointer hover:bg-gray-100 transition-colors">
-            <div className="flex items-center" onClick={() => handleSort("title")}>
+            <div className="flex items-center text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]" onClick={() => handleSort("title")}>
               Title <SortIcon field="title" />
             </div>
           </DataTableCell>
           <DataTableCell isHeader className="w-[15%] cursor-pointer hover:bg-gray-100 transition-colors">
-            <div className="flex items-center" onClick={() => handleSort("scheduledStart")}>
-              Scheduled Date <SortIcon field="scheduledStart" />
+            <div className="flex items-center text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]" onClick={() => handleSort("scheduledStart")}>
+              Scheduled <SortIcon field="scheduledStart" />
             </div>
           </DataTableCell>
-          <DataTableCell isHeader className="w-[15%]">Status</DataTableCell>
+          <DataTableCell isHeader className="w-[15%] text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">Status</DataTableCell>
           <DataTableCell isHeader className="w-[10%] text-right cursor-pointer hover:bg-gray-100 transition-colors">
-            <div className="flex items-center justify-end" onClick={() => handleSort("amount")}>
+            <div className="flex items-center justify-end text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]" onClick={() => handleSort("amount")}>
               Amount <SortIcon field="amount" />
             </div>
           </DataTableCell>
-          <DataTableCell isHeader className="w-[10%]">Invoice</DataTableCell>
-          <DataTableCell isHeader className="w-[5%] text-right">Actions</DataTableCell>
+          <DataTableCell isHeader className="w-[10%] text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">Invoice</DataTableCell>
+          <DataTableCell isHeader className="w-[5%] text-right text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">Actions</DataTableCell>
         </DataTableHeader>
         <DataTableBody>
           {jobs.map((job) => {
@@ -140,20 +140,20 @@ export default function JobsTable({ jobs }: JobsTableProps) {
             const invoiceStatus = job.invoicedAt ? "Invoiced" : (job.status === "COMPLETED" ? "Not Invoiced" : "N/A");
             
             return (
-              <DataTableRow key={job.id}>
-                <DataTableCell className="font-medium text-gray-900">
+              <DataTableRow key={job.id} className="hover:bg-blue-50/30 transition-colors group">
+                <DataTableCell className="py-2.5 font-bold text-gray-900 tracking-tight">
                   {job.client.firstName} {job.client.lastName}
                 </DataTableCell>
-                <DataTableCell>{job.title}</DataTableCell>
-                <DataTableCell>{formatDate(job.scheduledStart)}</DataTableCell>
-                <DataTableCell>
+                <DataTableCell className="py-2.5 text-xs font-medium text-gray-600">{job.title}</DataTableCell>
+                <DataTableCell className="py-2.5 text-xs font-bold text-gray-500 tabular-nums">{formatDate(job.scheduledStart)}</DataTableCell>
+                <DataTableCell className="py-2.5">
                   <StatusBadge status={job.status} />
                 </DataTableCell>
-                <DataTableCell className="text-right font-medium">
+                <DataTableCell className="py-2.5 text-right font-bold text-gray-900 tabular-nums">
                   {amount != null ? formatCurrency(amount) : "—"}
                 </DataTableCell>
-                <DataTableCell>
-                  <span className={`text-xs font-medium ${
+                <DataTableCell className="py-2.5">
+                  <span className={`text-[10px] font-bold uppercase tracking-tight ${
                     invoiceStatus === "Invoiced" ? "text-green-600" :
                     invoiceStatus === "Not Invoiced" ? "text-amber-600" : "text-gray-400"
                   }`}>

@@ -80,28 +80,28 @@ export default function ClientsTable({ clients }: ClientsTableProps) {
       <DataTable>
         <DataTableHeader>
           <DataTableCell isHeader className="w-[25%] cursor-pointer hover:bg-gray-100 transition-colors">
-            <div className="flex items-center" onClick={() => handleSort("firstName")}>
-              Name <SortIcon field="firstName" />
+            <div className="flex items-center text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]" onClick={() => handleSort("firstName")}>
+              Client <SortIcon field="firstName" />
             </div>
           </DataTableCell>
-          <DataTableCell isHeader className="w-[15%]">Phone</DataTableCell>
+          <DataTableCell isHeader className="w-[15%] text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">Phone</DataTableCell>
           <DataTableCell isHeader className="w-[15%] text-right cursor-pointer hover:bg-gray-100 transition-colors">
-            <div className="flex items-center justify-end" onClick={() => handleSort("totalRevenue")}>
-              Total Revenue <SortIcon field="totalRevenue" />
+            <div className="flex items-center justify-end text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]" onClick={() => handleSort("totalRevenue")}>
+              Revenue <SortIcon field="totalRevenue" />
             </div>
           </DataTableCell>
           <DataTableCell isHeader className="w-[15%] text-right cursor-pointer hover:bg-gray-100 transition-colors">
-            <div className="flex items-center justify-end" onClick={() => handleSort("outstandingBalance")}>
-              Outstanding <SortIcon field="outstandingBalance" />
+            <div className="flex items-center justify-end text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]" onClick={() => handleSort("outstandingBalance")}>
+              Balance <SortIcon field="outstandingBalance" />
             </div>
           </DataTableCell>
           <DataTableCell isHeader className="w-[15%] cursor-pointer hover:bg-gray-100 transition-colors">
-            <div className="flex items-center" onClick={() => handleSort("lastJobAt")}>
-              Last Job <SortIcon field="lastJobAt" />
+            <div className="flex items-center text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]" onClick={() => handleSort("lastJobAt")}>
+              Last Activity <SortIcon field="lastJobAt" />
             </div>
           </DataTableCell>
-          <DataTableCell isHeader className="w-[10%] text-center">Health</DataTableCell>
-          <DataTableCell isHeader className="w-[5%] text-right">Actions</DataTableCell>
+          <DataTableCell isHeader className="w-[10%] text-center text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">Health</DataTableCell>
+          <DataTableCell isHeader className="w-[5%] text-right text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">Actions</DataTableCell>
         </DataTableHeader>
         <DataTableBody>
           {clients.map((client) => {
@@ -113,49 +113,49 @@ export default function ClientsTable({ clients }: ClientsTableProps) {
             return (
               <DataTableRow 
                 key={client.id}
-                className={hasBalance ? "bg-red-50/20" : ""}
+                className={`hover:bg-blue-50/30 transition-colors group ${hasBalance ? "bg-red-50/20" : ""}`}
               >
-                <DataTableCell className="font-medium text-gray-900">
-                  <div className="flex flex-col">
-                    <span>{clientName}</span>
-                    {client.companyName && <span className="text-xs text-gray-500 font-normal">{client.companyName}</span>}
+                <DataTableCell className="py-2.5">
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-sm font-bold text-gray-900 tracking-tight">{clientName}</span>
+                    {client.companyName && <span className="text-[10px] font-bold text-gray-400 uppercase tracking-tight">{client.companyName}</span>}
                   </div>
                 </DataTableCell>
-                <DataTableCell className="text-gray-500">
+                <DataTableCell className="py-2.5 text-xs font-bold text-gray-500 tabular-nums">
                   {client.phone}
                 </DataTableCell>
-                <DataTableCell className="text-right font-medium">
+                <DataTableCell className="py-2.5 text-right font-bold text-gray-900 tabular-nums">
                   {formatCurrency(client.totalRevenue)}
                 </DataTableCell>
-                <DataTableCell className={`text-right font-medium ${hasBalance ? "text-red-600" : "text-gray-500 font-normal"}`}>
+                <DataTableCell className={`py-2.5 text-right font-bold tabular-nums ${hasBalance ? "text-red-600" : "text-gray-400"}`}>
                   {formatCurrency(client.outstandingBalance)}
                 </DataTableCell>
-                <DataTableCell className="text-gray-500">
-                  {client.lastJobAt ? formatRelativeDate(client.lastJobAt) : "Never"}
+                <DataTableCell className="py-2.5 text-xs font-bold text-gray-500 tabular-nums uppercase">
+                  {client.lastJobAt ? formatRelativeDate(client.lastJobAt) : "None"}
                 </DataTableCell>
-                <DataTableCell className="text-center">
+                <DataTableCell className="py-2.5 text-center">
                   <div 
-                    title="Health reflects recent job activity. WATCH: >60 days since last job. AT RISK: >90 days. INACTIVE: >180 days."
+                    title="Health reflects recent job activity."
                     className={needsAttention ? "ring-2 ring-offset-1 ring-red-100 rounded-full inline-block" : ""}
                   >
                     <StatusBadge status={healthStatus} />
                   </div>
                 </DataTableCell>
-                <DataTableCell className="text-right">
+                <DataTableCell className="py-2.5 text-right">
                   <div className="flex items-center justify-end gap-1">
                     <button
                       onClick={() => alert("Navigate to New Job form (Phase 6)")}
                       title="New Job"
-                      className="p-2 rounded-md text-gray-400 hover:text-green-600 hover:bg-green-50 focus:outline-none transition-all"
+                      className="p-1.5 rounded-md text-gray-400 hover:text-blue-600 hover:bg-blue-50 focus:outline-none transition-all"
                     >
-                      <PlusCircle size={18} />
+                      <PlusCircle size={16} strokeWidth={2.5} />
                     </button>
                     <button
                       onClick={() => openReminder(client.id, clientName)}
                       title="Send Reminder"
-                      className="p-2 rounded-md text-gray-400 hover:text-blue-600 hover:bg-blue-50 focus:outline-none transition-all"
+                      className="p-1.5 rounded-md text-gray-400 hover:text-blue-600 hover:bg-blue-50 focus:outline-none transition-all"
                     >
-                      <Bell size={18} />
+                      <Bell size={16} strokeWidth={2.5} />
                     </button>
                   </div>
                 </DataTableCell>

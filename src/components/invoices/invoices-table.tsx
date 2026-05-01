@@ -99,29 +99,29 @@ export default function InvoicesTable({ invoices }: InvoicesTableProps) {
         <DataTable>
           <DataTableHeader>
             <DataTableCell isHeader className="w-[15%] cursor-pointer hover:bg-gray-100 transition-colors">
-              <div className="flex items-center" onClick={() => handleSort("invoiceNumber")}>
+              <div className="flex items-center text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]" onClick={() => handleSort("invoiceNumber")}>
                 Invoice # <SortIcon field="invoiceNumber" />
               </div>
             </DataTableCell>
             <DataTableCell isHeader className="w-[20%] cursor-pointer hover:bg-gray-100 transition-colors">
-              <div className="flex items-center" onClick={() => handleSort("client")}>
+              <div className="flex items-center text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]" onClick={() => handleSort("client")}>
                 Client <SortIcon field="client" />
               </div>
             </DataTableCell>
-            <DataTableCell isHeader className="w-[15%]">Linked Job</DataTableCell>
+            <DataTableCell isHeader className="w-[15%] text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">Linked Job</DataTableCell>
             <DataTableCell isHeader className="w-[10%] text-right cursor-pointer hover:bg-gray-100 transition-colors">
-              <div className="flex items-center justify-end" onClick={() => handleSort("amount")}>
+              <div className="flex items-center justify-end text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]" onClick={() => handleSort("amount")}>
                 Amount <SortIcon field="amount" />
               </div>
             </DataTableCell>
-            <DataTableCell isHeader className="w-[10%]">Issue Date</DataTableCell>
+            <DataTableCell isHeader className="w-[10%] text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">Issued</DataTableCell>
             <DataTableCell isHeader className="w-[10%] cursor-pointer hover:bg-gray-100 transition-colors">
-              <div className="flex items-center" onClick={() => handleSort("dueDate")}>
+              <div className="flex items-center text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]" onClick={() => handleSort("dueDate")}>
                 Due Date <SortIcon field="dueDate" />
               </div>
             </DataTableCell>
-            <DataTableCell isHeader className="w-[10%] text-center">Status</DataTableCell>
-            <DataTableCell isHeader className="w-[5%] text-right">Actions</DataTableCell>
+            <DataTableCell isHeader className="w-[10%] text-center text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">Status</DataTableCell>
+            <DataTableCell isHeader className="w-[5%] text-right text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">Actions</DataTableCell>
           </DataTableHeader>
           <DataTableBody>
             {invoices.map((invoice) => {
@@ -138,32 +138,32 @@ export default function InvoicesTable({ invoices }: InvoicesTableProps) {
               return (
                 <DataTableRow 
                   key={invoice.id} 
-                  className={isOverdue ? "bg-red-50/50 hover:bg-red-100/50" : ""}
+                  className={`hover:bg-blue-50/30 transition-colors group ${isOverdue ? "bg-red-50/40" : ""}`}
                 >
-                  <DataTableCell className="font-medium text-gray-900">
+                  <DataTableCell className="py-2.5 font-bold text-gray-900 tracking-tight tabular-nums">
                     {invoice.invoiceNumber}
                   </DataTableCell>
-                  <DataTableCell className="font-medium text-gray-900">
+                  <DataTableCell className="py-2.5 font-bold text-gray-900 tracking-tight">
                     {clientName}
                   </DataTableCell>
-                  <DataTableCell className="text-gray-500">
+                  <DataTableCell className="py-2.5 text-xs font-medium text-gray-500">
                     {invoice.job ? invoice.job.title : "—"}
                   </DataTableCell>
-                  <DataTableCell className="text-right font-medium">
+                  <DataTableCell className="py-2.5 text-right font-bold text-gray-900 tabular-nums">
                     {formatCurrency(invoice.amount)}
                   </DataTableCell>
-                  <DataTableCell>{formatDate(invoice.issueDate)}</DataTableCell>
-                  <DataTableCell>
-                    <div className="flex flex-col">
-                      <span>{formatDate(invoice.dueDate)}</span>
+                  <DataTableCell className="py-2.5 text-xs font-bold text-gray-500 tabular-nums">{formatDate(invoice.issueDate)}</DataTableCell>
+                  <DataTableCell className="py-2.5">
+                    <div className="flex flex-col gap-0.5">
+                      <span className="text-xs font-bold text-gray-700 tabular-nums">{formatDate(invoice.dueDate)}</span>
                       {isOverdue && daysOverdue > 0 && (
-                        <span className="text-xs font-semibold text-red-600">
-                          {daysOverdue} days overdue
+                        <span className="text-[10px] font-bold text-red-600 uppercase">
+                          {daysOverdue}D Overdue
                         </span>
                       )}
                     </div>
                   </DataTableCell>
-                  <DataTableCell className="text-center">
+                  <DataTableCell className="py-2.5 text-center">
                     <StatusBadge status={invoice.status} />
                   </DataTableCell>
                   <DataTableCell className="text-right">
