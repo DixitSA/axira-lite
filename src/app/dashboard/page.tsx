@@ -18,6 +18,7 @@ import {
   AlertCircle, 
   Clock 
 } from "lucide-react";
+import Link from "next/link";
 
 export default async function DashboardPage() {
   const { businessId } = await getAuthenticatedUser();
