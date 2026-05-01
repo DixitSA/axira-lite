@@ -1,6 +1,6 @@
 "use server";
 
-import { auth } from "@clerk/nextjs/server";
+import { auth, clerkClient } from "@clerk/nextjs/server";
 import { db } from "@/lib/db";
 import { redirect } from "next/navigation";
 
@@ -36,6 +36,12 @@ export async function createBusiness(formData: FormData) {
         role: "OWNER",
       },
     });
+  });
+
+  // Sync onboarding status to Clerk metadata so middleware can gate access
+  const clerk = await clerkClient();
+  await clerk.users.updateUserMetadata(clerkId, {
+    publicMetadata: { onboardingComplete: true },
   });
 
   redirect("/dashboard");

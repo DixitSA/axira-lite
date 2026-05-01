@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { showToast } from "@/components/ui/toast";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { formatCurrency, formatDate } from "@/lib/utils/format";
 import StatusBadge from "@/components/ui/status-badge";
@@ -69,13 +70,14 @@ export default function JobsTable({ jobs }: JobsTableProps) {
       : <ArrowDown size={14} className="ml-1 text-blue-600" />;
   };
 
-  const handleAction = (actionFn: () => Promise<void>) => {
+  const handleAction = (actionFn: () => Promise<void>, successMsg?: string) => {
     startTransition(async () => {
       try {
         await actionFn();
+        if (successMsg) showToast(successMsg);
       } catch (error) {
         console.error("Action failed:", error);
-        alert(error instanceof Error ? error.message : "Action failed");
+        showToast(error instanceof Error ? error.message : "Action failed", "error");
       }
     });
   };
@@ -170,7 +172,7 @@ export default function JobsTable({ jobs }: JobsTableProps) {
                       <div className="py-1" role="menu">
                         {job.status === "SCHEDULED" && (
                           <button
-                            onClick={() => handleAction(() => markJobInProgress(job.id))}
+                            onClick={() => handleAction(() => markJobInProgress(job.id), "Job marked in progress")}
                             className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
                           >
                             <Play size={14} className="text-amber-500" /> Mark In Progress
@@ -178,7 +180,7 @@ export default function JobsTable({ jobs }: JobsTableProps) {
                         )}
                         {(job.status === "SCHEDULED" || job.status === "IN_PROGRESS") && (
                           <button
-                            onClick={() => handleAction(() => markJobComplete(job.id))}
+                            onClick={() => handleAction(() => markJobComplete(job.id), "Job marked complete")}
                             className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
                           >
                             <CheckCircle size={14} className="text-green-500" /> Mark Complete
@@ -192,7 +194,7 @@ export default function JobsTable({ jobs }: JobsTableProps) {
                         </button>
                         {job.status === "COMPLETED" && !job.invoicedAt && (
                           <button
-                            onClick={() => handleAction(() => createInvoiceForJob(job.id))}
+                            onClick={() => handleAction(() => createInvoiceForJob(job.id), "Invoice created")}
                             className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
                           >
                             <FileText size={14} className="text-blue-500" /> Create Invoice
@@ -202,7 +204,7 @@ export default function JobsTable({ jobs }: JobsTableProps) {
                           <button
                             onClick={() => {
                               if (window.confirm(`Are you sure you want to cancel the job for ${job.client.firstName}? This action cannot be undone.`)) {
-                                handleAction(() => cancelJob(job.id));
+                                handleAction(() => cancelJob(job.id), "Job cancelled");
                               }
                             }}
                             className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"

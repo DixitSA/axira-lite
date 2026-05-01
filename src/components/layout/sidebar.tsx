@@ -11,7 +11,8 @@ import {
   Users,
   Bell,
   Menu,
-  X
+  X,
+  Search,
 } from "lucide-react";
 
 interface NavItem {
@@ -36,6 +37,13 @@ export default function Sidebar() {
   useEffect(() => {
     setIsOpen(false);
   }, [pathname]);
+
+  const openCommandPalette = () => {
+    // Dispatch the same keyboard event the CommandPalette listens for
+    window.dispatchEvent(
+      new KeyboardEvent("keydown", { key: "k", metaKey: true, bubbles: true })
+    );
+  };
 
   return (
     <>
@@ -77,6 +85,18 @@ export default function Sidebar() {
             className="md:hidden p-1 text-gray-400 hover:text-gray-600"
           >
             <X size={20} />
+          </button>
+        </div>
+
+        {/* Search trigger */}
+        <div className="px-3 md:px-2 pt-3">
+          <button
+            onClick={openCommandPalette}
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-md border border-gray-200 bg-gray-50 text-sm text-gray-400 hover:border-gray-300 hover:bg-gray-100 transition-colors"
+          >
+            <Search size={14} className="flex-shrink-0" />
+            <span className="flex-1 text-left md:hidden lg:inline">Search...</span>
+            <kbd className="hidden lg:inline text-[10px] font-mono text-gray-400 bg-white border border-gray-200 px-1.5 py-0.5 rounded">⌘K</kbd>
           </button>
         </div>
         

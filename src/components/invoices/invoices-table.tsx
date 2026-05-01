@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { showToast } from "@/components/ui/toast";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { formatCurrency, formatDate } from "@/lib/utils/format";
 import StatusBadge from "@/components/ui/status-badge";
@@ -61,13 +62,14 @@ export default function InvoicesTable({ invoices }: InvoicesTableProps) {
       : <ArrowDown size={14} className="ml-1 text-blue-600" />;
   };
 
-  const handleAction = (actionFn: () => Promise<void>) => {
+  const handleAction = (actionFn: () => Promise<void>, successMsg?: string) => {
     startTransition(async () => {
       try {
         await actionFn();
+        if (successMsg) showToast(successMsg);
       } catch (error) {
         console.error("Action failed:", error);
-        alert(error instanceof Error ? error.message : "Action failed");
+        showToast(error instanceof Error ? error.message : "Action failed", "error");
       }
     });
   };
@@ -176,7 +178,7 @@ export default function InvoicesTable({ invoices }: InvoicesTableProps) {
                         <div className="py-1" role="menu">
                           {(invoice.status === "PENDING" || invoice.status === "OVERDUE") && (
                             <button
-                              onClick={() => handleAction(() => markInvoicePaid(invoice.id))}
+                              onClick={() => handleAction(() => markInvoicePaid(invoice.id), "Invoice marked as paid")}
                               className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
                             >
                               <CheckCircle size={14} className="text-green-500" /> Mark Paid
@@ -192,7 +194,7 @@ export default function InvoicesTable({ invoices }: InvoicesTableProps) {
                           )}
                           {invoice.status !== "VOID" && invoice.status !== "PAID" && (
                             <button
-                              onClick={() => handleAction(() => voidInvoice(invoice.id))}
+                              onClick={() => handleAction(() => voidInvoice(invoice.id), "Invoice voided")}
                               className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
                             >
                               <XCircle size={14} /> Void

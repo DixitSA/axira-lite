@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { ClerkProvider, SignInButton, SignUpButton, Show, UserButton } from "@clerk/nextjs";
+import { ClerkProvider, SignInButton, SignUpButton, Show } from "@clerk/nextjs";
 import { ToastContainer } from "@/components/ui/toast";
+import CommandPalette from "@/components/ui/command-palette";
 import "./globals.css";
 import Sidebar from "@/components/layout/sidebar";
 
@@ -43,6 +44,7 @@ export default function RootLayout({
             </main>
           </div>
           <ToastContainer />
+          <CommandPalette />
         </ClerkProvider>
       </body>
     </html>
