@@ -6,8 +6,9 @@ import StatusBadge from "@/components/ui/status-badge";
 import KpiCard from "@/components/ui/kpi-card";
 import { formatCurrency, formatDate, formatRelativeDate, formatPhone } from "@/lib/utils/format";
 import { computeClientHealth } from "@/lib/utils/client-health";
-import { DollarSign, Clock, Briefcase, AlertCircle, Phone, Mail, MapPin, Building2 } from "lucide-react";
+import { DollarSign, Clock, Briefcase, AlertCircle, Phone, Mail, MapPin, Building2, MessageSquare } from "lucide-react";
 import Link from "next/link";
+import ClientDetailActions from "@/components/clients/client-detail-actions";
 
 export default async function ClientDetailPage({
   params,
@@ -41,6 +42,11 @@ export default async function ClientDetailPage({
 
   if (!client) notFound();
 
+  const business = await db.business.findUnique({
+    where: { id: businessId },
+    select: { name: true },
+  });
+
   const healthStatus = computeClientHealth(client.lastJobAt);
   const completedJobs = client.jobs.filter((j: any) => j.status === "COMPLETED").length;
   const activeJobs = client.jobs.filter((j: any) => j.status === "SCHEDULED" || j.status === "IN_PROGRESS").length;
@@ -58,12 +64,22 @@ export default async function ClientDetailPage({
           </>
         }
       >
-        <Link
-          href="/clients"
-          className="px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-        >
-          Back to Clients
-        </Link>
+        <div className="flex items-center gap-3">
+          <ClientDetailActions 
+            client={{
+              firstName: client.firstName,
+              lastName: client.lastName,
+              phone: client.phone,
+            }}
+            businessName={business?.name || "Axira Lite"}
+          />
+          <Link
+            href="/clients"
+            className="px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+          >
+            Back to Clients
+          </Link>
+        </div>
       </PageHeader>
 
       <div className="p-6 space-y-8 max-w-[1600px] mx-auto w-full">

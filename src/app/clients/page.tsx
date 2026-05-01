@@ -49,7 +49,10 @@ export default async function ClientsPage({
     orderBy,
   });
 
-  const totalClients = await db.client.count({ where });
+  const business = await db.business.findUnique({
+    where: { id: businessId },
+    select: { name: true },
+  });
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -63,7 +66,10 @@ export default async function ClientsPage({
       <div className="p-6">
         <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
           <ClientsFilters />
-          <ClientsTable clients={clients} />
+          <ClientsTable 
+            clients={clients} 
+            businessName={business?.name || "Axira Lite"} 
+          />
         </div>
       </div>
     </div>

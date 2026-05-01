@@ -21,18 +21,21 @@ import {
   PlusCircle,
   ArrowUpDown,
   ArrowUp,
-  ArrowDown
+  ArrowDown,
+  MessageSquare
 } from "lucide-react";
 import ComposeModal from "@/components/reminders/compose-modal";
+import SMSComposer from "@/components/sms-composer";
 import JobForm from "@/components/jobs/job-form";
 
 type ClientType = any; // Avoiding deep Prisma type export for now
 
 interface ClientsTableProps {
   clients: ClientType[];
+  businessName: string;
 }
 
-export default function ClientsTable({ clients }: ClientsTableProps) {
+export default function ClientsTable({ clients, businessName }: ClientsTableProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -44,6 +47,10 @@ export default function ClientsTable({ clients }: ClientsTableProps) {
   // Job Modal State
   const [isJobModalOpen, setIsJobModalOpen] = useState(false);
   const [selectedClientIdForJob, setSelectedClientIdForJob] = useState<number | undefined>(undefined);
+
+  // SMS Composer State
+  const [isSMSModalOpen, setIsSMSModalOpen] = useState(false);
+  const [smsClient, setSmsClient] = useState<{ firstName: string; lastName: string; phone: string } | null>(null);
 
   const sortField = searchParams.get("sort") || "lastJobAt";
   const sortDir = searchParams.get("dir") || "desc";
@@ -74,6 +81,15 @@ export default function ClientsTable({ clients }: ClientsTableProps) {
   const openJobModal = (clientId: number) => {
     setSelectedClientIdForJob(clientId);
     setIsJobModalOpen(true);
+  };
+
+  const openSMSComposer = (client: any) => {
+    setSmsClient({
+      firstName: client.firstName,
+      lastName: client.lastName,
+      phone: client.phone,
+    });
+    setIsSMSModalOpen(true);
   };
 
   if (!clients?.length) {
@@ -163,6 +179,13 @@ export default function ClientsTable({ clients }: ClientsTableProps) {
                       <PlusCircle size={16} strokeWidth={2.5} />
                     </button>
                     <button
+                      onClick={() => openSMSComposer(client)}
+                      title="Send SMS"
+                      className="p-1.5 rounded-md text-gray-400 hover:text-blue-600 hover:bg-blue-50 focus:outline-none transition-all"
+                    >
+                      <MessageSquare size={16} strokeWidth={2.5} />
+                    </button>
+                    <button
                       onClick={() => openReminder(client.id, clientName)}
                       title="Send Reminder"
                       className="p-1.5 rounded-md text-gray-400 hover:text-blue-600 hover:bg-blue-50 focus:outline-none transition-all"
@@ -182,6 +205,13 @@ export default function ClientsTable({ clients }: ClientsTableProps) {
         onClose={() => setIsModalOpen(false)} 
         clientId={selectedClient?.id}
         clientName={selectedClient?.name}
+      />
+
+      <SMSComposer
+        isOpen={isSMSModalOpen}
+        onClose={() => setIsSMSModalOpen(false)}
+        client={smsClient}
+        businessName={businessName}
       />
 
       <JobForm 
