@@ -17,7 +17,7 @@ export function useSmsLink() {
     const link = buildSMSLink(phone, message);
     
     if (!isMobile) {
-      showToast("SMS links work best on a mobile device", "neutral");
+      showToast("SMS links work best on a mobile device");
     }
 
     // Attempt to open the link
