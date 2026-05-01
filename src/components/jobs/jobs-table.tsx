@@ -48,6 +48,7 @@ export default function JobsTable({ jobs }: JobsTableProps) {
   // Reminder Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedContext, setSelectedContext] = useState<any>(null);
+  const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
 
   const sortField = searchParams.get("sort") || "scheduledStart";
   const sortDir = searchParams.get("dir") || "desc";
@@ -160,60 +161,81 @@ export default function JobsTable({ jobs }: JobsTableProps) {
                   </span>
                 </DataTableCell>
                 <DataTableCell className="text-right">
-                  <div className="relative group inline-block text-left">
+                  <div className="relative inline-block text-left">
                     <button 
+                      onClick={() => setOpenDropdownId(openDropdownId === job.id ? null : job.id)}
                       aria-label="Job actions"
-                      aria-haspopup="true"
                       className="p-2 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all"
                     >
                       <MoreHorizontal size={18} />
                     </button>
-                    <div className="hidden group-hover:block absolute right-0 mt-0 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
-                      <div className="py-1" role="menu">
-                        {job.status === "SCHEDULED" && (
-                          <button
-                            onClick={() => handleAction(() => markJobInProgress(job.id), "Job marked in progress")}
-                            className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
-                          >
-                            <Play size={14} className="text-amber-500" /> Mark In Progress
-                          </button>
-                        )}
-                        {(job.status === "SCHEDULED" || job.status === "IN_PROGRESS") && (
-                          <button
-                            onClick={() => handleAction(() => markJobComplete(job.id), "Job marked complete")}
-                            className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
-                          >
-                            <CheckCircle size={14} className="text-green-500" /> Mark Complete
-                          </button>
-                        )}
-                        <button
-                          onClick={() => openReminder(job)}
-                          className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
-                        >
-                          <Bell size={14} className="text-blue-500" /> Send Reminder
-                        </button>
-                        {job.status === "COMPLETED" && !job.invoicedAt && (
-                          <button
-                            onClick={() => handleAction(() => createInvoiceForJob(job.id), "Invoice created")}
-                            className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
-                          >
-                            <FileText size={14} className="text-blue-500" /> Create Invoice
-                          </button>
-                        )}
-                        {job.status !== "COMPLETED" && job.status !== "CANCELLED" && (
-                          <button
-                            onClick={() => {
-                              if (window.confirm(`Are you sure you want to cancel the job for ${job.client.firstName}? This action cannot be undone.`)) {
-                                handleAction(() => cancelJob(job.id), "Job cancelled");
-                              }
-                            }}
-                            className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
-                          >
-                            <XCircle size={14} /> Cancel
-                          </button>
-                        )}
-                      </div>
-                    </div>
+                    {openDropdownId === job.id && (
+                      <>
+                        <div 
+                          className="fixed inset-0 z-10" 
+                          onClick={() => setOpenDropdownId(null)}
+                        />
+                        <div className="absolute right-0 mt-0 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-20">
+                          <div className="py-1" role="menu">
+                            {job.status === "SCHEDULED" && (
+                              <button
+                                onClick={() => {
+                                  handleAction(() => markJobInProgress(job.id), "Job marked in progress");
+                                  setOpenDropdownId(null);
+                                }}
+                                className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+                              >
+                                <Play size={14} className="text-amber-500" /> Mark In Progress
+                              </button>
+                            )}
+                            {(job.status === "SCHEDULED" || job.status === "IN_PROGRESS") && (
+                              <button
+                                onClick={() => {
+                                  handleAction(() => markJobComplete(job.id), "Job marked complete");
+                                  setOpenDropdownId(null);
+                                }}
+                                className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+                              >
+                                <CheckCircle size={14} className="text-green-500" /> Mark Complete
+                              </button>
+                            )}
+                            <button
+                              onClick={() => {
+                                openReminder(job);
+                                setOpenDropdownId(null);
+                              }}
+                              className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+                            >
+                              <Bell size={14} className="text-blue-500" /> Send Reminder
+                            </button>
+                            {job.status === "COMPLETED" && !job.invoicedAt && (
+                              <button
+                                onClick={() => {
+                                  handleAction(() => createInvoiceForJob(job.id), "Invoice created");
+                                  setOpenDropdownId(null);
+                                }}
+                                className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+                              >
+                                <FileText size={14} className="text-blue-500" /> Create Invoice
+                              </button>
+                            )}
+                            {job.status !== "COMPLETED" && job.status !== "CANCELLED" && (
+                              <button
+                                onClick={() => {
+                                  if (window.confirm(`Are you sure you want to cancel the job for ${job.client.firstName}? This action cannot be undone.`)) {
+                                    handleAction(() => cancelJob(job.id), "Job cancelled");
+                                  }
+                                  setOpenDropdownId(null);
+                                }}
+                                className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
+                              >
+                                <XCircle size={14} /> Cancel
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      </>
+                    )}
                   </div>
                 </DataTableCell>
               </DataTableRow>

@@ -142,30 +142,21 @@ export default function ClientsTable({ clients }: ClientsTableProps) {
                   </div>
                 </DataTableCell>
                 <DataTableCell className="text-right">
-                  <div className="relative group inline-block text-left">
-                    <button 
-                      aria-label="Client actions"
-                      aria-haspopup="true"
-                      className="p-2 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all"
+                  <div className="flex items-center justify-end gap-1">
+                    <button
+                      onClick={() => alert("Navigate to New Job form (Phase 6)")}
+                      title="New Job"
+                      className="p-2 rounded-md text-gray-400 hover:text-green-600 hover:bg-green-50 focus:outline-none transition-all"
                     >
-                      <MoreHorizontal size={18} />
+                      <PlusCircle size={18} />
                     </button>
-                    <div className="hidden group-hover:block absolute right-0 mt-0 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
-                      <div className="py-1" role="menu">
-                        <button
-                          onClick={() => alert("Navigate to New Job form (Phase 6)")}
-                          className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
-                        >
-                          <PlusCircle size={14} className="text-green-500" /> New Job
-                        </button>
-                        <button
-                          onClick={() => openReminder(client.id, clientName)}
-                          className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
-                        >
-                          <Bell size={14} className="text-blue-500" /> Send Reminder
-                        </button>
-                      </div>
-                    </div>
+                    <button
+                      onClick={() => openReminder(client.id, clientName)}
+                      title="Send Reminder"
+                      className="p-2 rounded-md text-gray-400 hover:text-blue-600 hover:bg-blue-50 focus:outline-none transition-all"
+                    >
+                      <Bell size={18} />
+                    </button>
                   </div>
                 </DataTableCell>
               </DataTableRow>

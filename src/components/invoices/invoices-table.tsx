@@ -40,6 +40,7 @@ export default function InvoicesTable({ invoices }: InvoicesTableProps) {
   // Reminder Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedClient, setSelectedClient] = useState<{ id: number, name: string, invoiceId: number } | null>(null);
+  const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
 
   const sortField = searchParams.get("sort") || "dueDate";
   const sortDir = searchParams.get("dir") || "asc";
@@ -166,42 +167,59 @@ export default function InvoicesTable({ invoices }: InvoicesTableProps) {
                     <StatusBadge status={invoice.status} />
                   </DataTableCell>
                   <DataTableCell className="text-right">
-                    <div className="relative group inline-block text-left">
+                    <div className="relative inline-block text-left">
                       <button 
+                        onClick={() => setOpenDropdownId(openDropdownId === invoice.id ? null : invoice.id)}
                         aria-label="Invoice actions"
-                        aria-haspopup="true"
                         className="p-2 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all"
                       >
                         <MoreHorizontal size={18} />
                       </button>
-                      <div className="hidden group-hover:block absolute right-0 mt-0 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
-                        <div className="py-1" role="menu">
-                          {(invoice.status === "PENDING" || invoice.status === "OVERDUE") && (
-                            <button
-                              onClick={() => handleAction(() => markInvoicePaid(invoice.id), "Invoice marked as paid")}
-                              className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
-                            >
-                              <CheckCircle size={14} className="text-green-500" /> Mark Paid
-                            </button>
-                          )}
-                          {(invoice.status === "PENDING" || invoice.status === "OVERDUE") && (
-                            <button
-                              onClick={() => openReminder(invoice.clientId, clientName, invoice.id)}
-                              className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
-                            >
-                              <Bell size={14} className="text-blue-500" /> Send Reminder
-                            </button>
-                          )}
-                          {invoice.status !== "VOID" && invoice.status !== "PAID" && (
-                            <button
-                              onClick={() => handleAction(() => voidInvoice(invoice.id), "Invoice voided")}
-                              className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
-                            >
-                              <XCircle size={14} /> Void
-                            </button>
-                          )}
-                        </div>
-                      </div>
+                      {openDropdownId === invoice.id && (
+                        <>
+                          <div 
+                            className="fixed inset-0 z-10" 
+                            onClick={() => setOpenDropdownId(null)}
+                          />
+                          <div className="absolute right-0 mt-0 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-20">
+                            <div className="py-1" role="menu">
+                              {(invoice.status === "PENDING" || invoice.status === "OVERDUE") && (
+                                <button
+                                  onClick={() => {
+                                    handleAction(() => markInvoicePaid(invoice.id), "Invoice marked as paid");
+                                    setOpenDropdownId(null);
+                                  }}
+                                  className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+                                >
+                                  <CheckCircle size={14} className="text-green-500" /> Mark Paid
+                                </button>
+                              )}
+                              {(invoice.status === "PENDING" || invoice.status === "OVERDUE") && (
+                                <button
+                                  onClick={() => {
+                                    openReminder(invoice.clientId, clientName, invoice.id);
+                                    setOpenDropdownId(null);
+                                  }}
+                                  className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+                                >
+                                  <Bell size={14} className="text-blue-500" /> Send Reminder
+                                </button>
+                              )}
+                              {invoice.status !== "VOID" && invoice.status !== "PAID" && (
+                                <button
+                                  onClick={() => {
+                                    handleAction(() => voidInvoice(invoice.id), "Invoice voided");
+                                    setOpenDropdownId(null);
+                                  }}
+                                  className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
+                                >
+                                  <XCircle size={14} /> Void
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        </>
+                      )}
                     </div>
                   </DataTableCell>
                 </DataTableRow>
