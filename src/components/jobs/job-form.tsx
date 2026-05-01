@@ -9,9 +9,10 @@ interface JobFormProps {
   isOpen: boolean;
   onClose: () => void;
   clients: { id: number; firstName: string; lastName: string }[];
+  defaultClientId?: number;
 }
 
-export default function JobForm({ isOpen, onClose, clients }: JobFormProps) {
+export default function JobForm({ isOpen, onClose, clients, defaultClientId }: JobFormProps) {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
@@ -49,7 +50,7 @@ export default function JobForm({ isOpen, onClose, clients }: JobFormProps) {
 
           <div>
             <label htmlFor="jf-clientId" className="block text-sm font-medium text-gray-700 mb-1">Client *</label>
-            <select id="jf-clientId" name="clientId" required className="block w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary">
+            <select id="jf-clientId" name="clientId" required defaultValue={defaultClientId || ""} className="block w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary">
               <option value="">Select a client</option>
               {clients.map((c) => (
                 <option key={c.id} value={c.id}>{c.firstName} {c.lastName}</option>

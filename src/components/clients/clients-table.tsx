@@ -22,6 +22,7 @@ import {
   ArrowDown
 } from "lucide-react";
 import ComposeModal from "@/components/reminders/compose-modal";
+import JobForm from "@/components/jobs/job-form";
 
 type ClientType = any; // Avoiding deep Prisma type export for now
 
@@ -37,6 +38,10 @@ export default function ClientsTable({ clients }: ClientsTableProps) {
   // Reminder Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedClient, setSelectedClient] = useState<{ id: number, name: string } | null>(null);
+
+  // Job Modal State
+  const [isJobModalOpen, setIsJobModalOpen] = useState(false);
+  const [selectedClientIdForJob, setSelectedClientIdForJob] = useState<number | undefined>(undefined);
 
   const sortField = searchParams.get("sort") || "lastJobAt";
   const sortDir = searchParams.get("dir") || "desc";
@@ -62,6 +67,11 @@ export default function ClientsTable({ clients }: ClientsTableProps) {
   const openReminder = (clientId: number, clientName: string) => {
     setSelectedClient({ id: clientId, name: clientName });
     setIsModalOpen(true);
+  };
+
+  const openJobModal = (clientId: number) => {
+    setSelectedClientIdForJob(clientId);
+    setIsJobModalOpen(true);
   };
 
   if (!clients?.length) {
@@ -144,7 +154,7 @@ export default function ClientsTable({ clients }: ClientsTableProps) {
                 <DataTableCell className="py-2.5 text-right">
                   <div className="flex items-center justify-end gap-1">
                     <button
-                      onClick={() => alert("Navigate to New Job form (Phase 6)")}
+                      onClick={() => openJobModal(client.id)}
                       title="New Job"
                       className="p-1.5 rounded-md text-gray-400 hover:text-blue-600 hover:bg-blue-50 focus:outline-none transition-all"
                     >
@@ -170,6 +180,13 @@ export default function ClientsTable({ clients }: ClientsTableProps) {
         onClose={() => setIsModalOpen(false)} 
         clientId={selectedClient?.id}
         clientName={selectedClient?.name}
+      />
+
+      <JobForm 
+        isOpen={isJobModalOpen} 
+        onClose={() => setIsJobModalOpen(false)} 
+        clients={clients} 
+        defaultClientId={selectedClientIdForJob} 
       />
     </>
   );
