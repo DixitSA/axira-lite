@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
-import { UserButton } from "@clerk/nextjs";
+import { UserButton, Show } from "@clerk/nextjs";
 import {
   LayoutDashboard,
   Briefcase,
@@ -112,16 +112,18 @@ export default function Sidebar() {
             </div>
             <span className="md:hidden lg:inline">Help & Docs</span>
           </Link>
-          <div className="flex items-center gap-3 px-3 py-2">
-            <UserButton
-              appearance={{
-                elements: {
-                  avatarBox: "w-7 h-7",
-                },
-              }}
-            />
-            <span className="md:hidden lg:inline text-sm text-gray-600 font-medium">Account</span>
-          </div>
+          <Show when="signed-in">
+            <div className="flex items-center gap-3 px-3 py-2">
+              <UserButton
+                appearance={{
+                  elements: {
+                    avatarBox: "w-7 h-7",
+                  },
+                }}
+              />
+              <span className="md:hidden lg:inline text-sm text-gray-600 font-medium">Account</span>
+            </div>
+          </Show>
         </div>
       </aside>
     </>
