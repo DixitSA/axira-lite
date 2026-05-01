@@ -4,6 +4,7 @@ import PageHeader from "@/components/layout/page-header";
 import KpiCard from "@/components/ui/kpi-card";
 import ActionCard from "@/components/ui/action-card";
 import StatusBadge from "@/components/ui/status-badge";
+import RevenueChart from "@/components/dashboard/revenue-chart";
 import { 
   formatCurrency, 
   formatTime, 
@@ -87,6 +88,30 @@ export default async function DashboardPage() {
       },
     },
   });
+
+  // Revenue Chart: Last 6 months of revenue vs outstanding
+  const monthlyData = [];
+  for (let i = 5; i >= 0; i--) {
+    const monthStart = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const monthEnd = new Date(now.getFullYear(), now.getMonth() - i + 1, 0, 23, 59, 59);
+    const monthLabel = monthStart.toLocaleString("en-US", { month: "short" });
+
+    const paidAgg = await db.invoice.aggregate({
+      _sum: { paidAmount: true },
+      where: { businessId, paidDate: { gte: monthStart, lte: monthEnd } },
+    });
+
+    const outstandingAgg = await db.invoice.findMany({
+      where: { businessId, status: { in: ["PENDING", "OVERDUE"] }, issueDate: { gte: monthStart, lte: monthEnd } },
+      select: { amount: true, paidAmount: true },
+    });
+
+    monthlyData.push({
+      month: monthLabel,
+      revenue: paidAgg._sum.paidAmount || 0,
+      outstanding: outstandingAgg.reduce((s, inv) => s + (inv.amount - inv.paidAmount), 0),
+    });
+  }
 
   // Action Center Calculations
   const overdueInvoicesCount = await db.invoice.count({
@@ -215,6 +240,9 @@ export default async function DashboardPage() {
             />
           </div>
         </div>
+
+        {/* Cash Flow Radar */}
+        <RevenueChart monthlyData={monthlyData} />
 
         {/* Action Center */}
         <section>

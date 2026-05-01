@@ -2,6 +2,7 @@
 
 import { useState, useTransition, useEffect } from "react";
 import { X, Send, AlignLeft } from "lucide-react";
+import { showToast } from "@/components/ui/toast";
 import { sendReminder } from "@/lib/actions/reminders";
 import { REMINDER_TEMPLATES, interpolateTemplate } from "@/lib/utils/reminder-templates";
 
@@ -59,16 +60,20 @@ export default function ComposeModal({
     
     startTransition(async () => {
       try {
-        await sendReminder({
+        const result = await sendReminder({
           clientId,
           invoiceId,
           jobId,
           content: message,
         });
         onClose();
-        alert("Reminder sent successfully!"); // Basic toast
+        if (result.simulated) {
+          showToast("Message saved (SMS simulated, configure Twilio for live delivery)");
+        } else {
+          showToast("SMS sent successfully!");
+        }
       } catch (error) {
-        alert(error instanceof Error ? error.message : "Failed to send reminder");
+        showToast(error instanceof Error ? error.message : "Failed to send reminder", "error");
       }
     });
   };

@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import { useState, useTransition } from "react";
 import { showToast } from "@/components/ui/toast";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
@@ -141,10 +143,16 @@ export default function JobsTable({ jobs }: JobsTableProps) {
             
             return (
               <DataTableRow key={job.id} className="hover:bg-blue-50/30 transition-colors group">
-                <DataTableCell className="py-2.5 font-bold text-gray-900 tracking-tight">
-                  {job.client.firstName} {job.client.lastName}
+                <DataTableCell className="py-2.5">
+                  <Link href={`/clients/${job.client.id}`} className="font-bold text-gray-900 tracking-tight hover:text-blue-600 transition-colors">
+                    {job.client.firstName} {job.client.lastName}
+                  </Link>
                 </DataTableCell>
-                <DataTableCell className="py-2.5 text-xs font-medium text-gray-600">{job.title}</DataTableCell>
+                <DataTableCell className="py-2.5">
+                  <Link href={`/jobs/${job.id}`} className="text-xs font-medium text-gray-600 hover:text-blue-600 transition-colors">
+                    {job.title}
+                  </Link>
+                </DataTableCell>
                 <DataTableCell className="py-2.5 text-xs font-bold text-gray-500 tabular-nums">{formatDate(job.scheduledStart)}</DataTableCell>
                 <DataTableCell className="py-2.5">
                   <StatusBadge status={job.status} />

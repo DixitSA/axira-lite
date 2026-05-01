@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import { useState } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { formatCurrency, formatRelativeDate } from "@/lib/utils/format";
@@ -127,7 +129,7 @@ export default function ClientsTable({ clients }: ClientsTableProps) {
               >
                 <DataTableCell className="py-2.5">
                   <div className="flex flex-col gap-0.5">
-                    <span className="text-sm font-bold text-gray-900 tracking-tight">{clientName}</span>
+                    <Link href={`/clients/${client.id}`} className="text-sm font-bold text-gray-900 tracking-tight hover:text-blue-600 transition-colors">{clientName}</Link>
                     {client.companyName && <span className="text-[10px] font-bold text-gray-400 uppercase tracking-tight">{client.companyName}</span>}
                   </div>
                 </DataTableCell>
