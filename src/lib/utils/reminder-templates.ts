@@ -10,9 +10,9 @@ export type TemplateData = {
 };
 
 export const REMINDER_TEMPLATES = {
-  OVERDUE: "Hi {firstName}, this is {businessName}. You have an outstanding balance of {amount} due on {dueDate}. Please let us know if you have any questions. Thanks!",
-  CONFIRMATION: "Hi {firstName}, just confirming your {serviceType} appointment on {appointmentDate}. See you then! — {businessName}",
-  FOLLOW_UP: "Hi {firstName}, it's been a while since your last {serviceType} with us. Ready to schedule another? Reply or call us anytime. — {businessName}",
+  OVERDUE: "[Axira Lite] Hi {firstName}, your balance of {amount} was due on {dueDate}. Please let us know if you have questions. Reply STOP to opt out.",
+  CONFIRMATION: "[Axira Lite] Hi {firstName}, confirming your {serviceType} appointment on {appointmentDate}. See you then! Reply STOP to opt out.",
+  FOLLOW_UP: "[Axira Lite] Hi {firstName}, it's been a while since your last {serviceType}. Ready to schedule another? Reply or call us. Reply STOP to opt out.",
 };
 
 export function interpolateTemplate(template: string, data: TemplateData): string {
