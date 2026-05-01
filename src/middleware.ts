@@ -1,5 +1,4 @@
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
-import { NextResponse } from 'next/server'
 
 const isPublicRoute = createRouteMatcher([
   '/sign-in(.*)',
@@ -10,24 +9,10 @@ const isPublicRoute = createRouteMatcher([
 ])
 
 export default clerkMiddleware(async (auth, req) => {
-  // Allow public routes through without any checks
-  if (isPublicRoute(req)) {
-    return NextResponse.next()
+  // Protect all non-public routes (require sign-in)
+  if (!isPublicRoute(req)) {
+    await auth.protect()
   }
-
-  // All other routes require authentication
-  const { userId, sessionClaims } = await auth.protect()
-
-  // Check if onboarding is complete via Clerk metadata
-  const onboardingComplete =
-    (sessionClaims?.metadata as Record<string, unknown>)?.onboardingComplete === true
-
-  if (!onboardingComplete) {
-    const onboardingUrl = new URL('/onboarding', req.url)
-    return NextResponse.redirect(onboardingUrl)
-  }
-
-  return NextResponse.next()
 })
 
 export const config = {
