@@ -4,9 +4,11 @@ import { notFound } from "next/navigation";
 import PageHeader from "@/components/layout/page-header";
 import StatusBadge from "@/components/ui/status-badge";
 import { formatCurrency, formatDate, formatTime } from "@/lib/utils/format";
-import { MapPin, Clock, DollarSign, FileText, User } from "lucide-react";
+import { MapPin, Clock, DollarSign, FileText, User, ImageIcon } from "lucide-react";
 import Link from "next/link";
 import JobDetailActions from "@/components/jobs/job-detail-actions";
+import PhotoUploader from "@/components/jobs/photo-uploader";
+import Image from "next/image";
 
 export default async function JobDetailPage({
   params,
@@ -20,7 +22,11 @@ export default async function JobDetailPage({
 
   const job = await db.job.findFirst({
     where: { id: jobId, businessId },
-    include: { client: true, invoices: { orderBy: { createdAt: "desc" } } },
+    include: { 
+      client: true, 
+      invoices: { orderBy: { createdAt: "desc" } },
+      media: { orderBy: { createdAt: "desc" } }
+    },
   });
   if (!job) notFound();
 
@@ -72,6 +78,50 @@ export default async function JobDetailPage({
             </div>
           </div>
         </div>
+
+        {/* Media Gallery & Uploader */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <div className="lg:col-span-8">
+            <section className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+              <div className="px-5 py-3 border-b border-gray-100 bg-gray-50/50 flex items-center justify-between">
+                <h2 className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">Field Photos</h2>
+                <span className="text-[10px] font-bold text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">{job.media.length} Photos</span>
+              </div>
+              <div className="p-5">
+                {job.media.length > 0 ? (
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    {job.media.map((item: any) => (
+                      <div key={item.id} className="group relative rounded-lg overflow-hidden border border-gray-200 aspect-square">
+                        {/* Using standard img to handle dynamic paths nicely */}
+                        <img 
+                          src={item.url} 
+                          alt={item.caption || "Job photo"} 
+                          className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
+                        />
+                        {item.caption && (
+                          <div className="absolute bottom-0 inset-x-0 bg-black/60 p-2 transform translate-y-full group-hover:translate-y-0 transition-transform">
+                            <p className="text-xs text-white truncate">{item.caption}</p>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="py-12 flex flex-col items-center justify-center text-center">
+                    <div className="w-12 h-12 bg-gray-50 rounded-full flex items-center justify-center mb-3">
+                      <ImageIcon className="text-gray-300" size={24} />
+                    </div>
+                    <p className="text-xs font-bold text-gray-300 uppercase tracking-widest">No photos uploaded</p>
+                  </div>
+                )}
+              </div>
+            </section>
+          </div>
+          <div className="lg:col-span-4">
+            <PhotoUploader jobId={job.id} />
+          </div>
+        </div>
+
         {job.invoices.length > 0 && (
           <section className="bg-white border border-gray-200 rounded-lg overflow-hidden">
             <div className="px-5 py-3 border-b border-gray-100 bg-gray-50/50 flex items-center justify-between">

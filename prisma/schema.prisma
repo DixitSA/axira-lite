@@ -80,6 +80,7 @@ model Job {
   business Business  @relation(fields: [businessId], references: [id])
   client   Client    @relation(fields: [clientId], references: [id])
   invoices Invoice[]
+  media    JobMedia[]
 }
 
 model Invoice {
@@ -116,4 +117,14 @@ model ReminderMessage {
 
   business Business @relation(fields: [businessId], references: [id])
   client   Client   @relation(fields: [clientId], references: [id])
+}
+
+model JobMedia {
+  id        Int      @id @default(autoincrement())
+  jobId     Int
+  url       String
+  caption   String?
+  createdAt DateTime @default(now())
+
+  job       Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
 }

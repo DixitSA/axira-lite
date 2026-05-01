@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import { useState, useTransition } from "react";
 import { showToast } from "@/components/ui/toast";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
@@ -140,11 +142,15 @@ export default function InvoicesTable({ invoices }: InvoicesTableProps) {
                   key={invoice.id} 
                   className={`hover:bg-blue-50/30 transition-colors group ${isOverdue ? "bg-red-50/40" : ""}`}
                 >
-                  <DataTableCell className="py-2.5 font-bold text-gray-900 tracking-tight tabular-nums">
-                    {invoice.invoiceNumber}
+                  <DataTableCell className="py-2.5 tabular-nums">
+                    <Link href={`/invoices/${invoice.id}`} className="font-bold text-gray-900 tracking-tight hover:text-blue-600 transition-colors">
+                      {invoice.invoiceNumber}
+                    </Link>
                   </DataTableCell>
-                  <DataTableCell className="py-2.5 font-bold text-gray-900 tracking-tight">
-                    {clientName}
+                  <DataTableCell className="py-2.5">
+                    <Link href={`/clients/${invoice.client.id}`} className="font-bold text-gray-900 tracking-tight hover:text-blue-600 transition-colors">
+                      {clientName}
+                    </Link>
                   </DataTableCell>
                   <DataTableCell className="py-2.5 text-xs font-medium text-gray-500">
                     {invoice.job ? invoice.job.title : "—"}

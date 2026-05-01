@@ -7,6 +7,7 @@ import { UserButton, Show } from "@clerk/nextjs";
 import {
   LayoutDashboard,
   Briefcase,
+  Calendar,
   FileText,
   Users,
   Bell,
@@ -23,6 +24,7 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/calendar", label: "Calendar", icon: Calendar },
   { href: "/jobs", label: "Jobs", icon: Briefcase },
   { href: "/invoices", label: "Invoices", icon: FileText },
   { href: "/clients", label: "Clients", icon: Users },
