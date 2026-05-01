@@ -31,35 +31,37 @@ export default function ActionCard({
   href,
 }: ActionCardProps) {
   const Icon = ACTION_ICONS[type] || AlertCircle;
+  
+  // OKLCH-based priority colors for "Precision Cockpit"
   const priorityColor = priority <= 2 
-    ? "text-status-overdue-text bg-status-overdue-bg" 
+    ? "text-red-600 bg-red-50" 
     : priority <= 4 
-    ? "text-status-pending-text bg-status-pending-bg" 
-    : "text-primary bg-primary/5";
+    ? "text-amber-600 bg-amber-50" 
+    : "text-blue-600 bg-blue-50";
 
   return (
     <Link
       href={href}
-      className="block bg-white border border-gray-200 rounded-lg p-4 transition-all hover:border-blue-300 hover:shadow-sm group"
+      className="flex items-center justify-between bg-white border border-gray-200 rounded-lg p-5 transition-all hover:border-blue-500 group"
     >
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <div className={`p-2.5 rounded-lg ${priorityColor} transition-colors`}>
-            <Icon size={20} />
-          </div>
-          <div>
-            <h4 className="text-sm font-semibold text-gray-900">{title}</h4>
-            <p className="text-sm text-gray-500">
-              {description}
-              {amount !== undefined && (
-                <span className="font-medium text-gray-900 ml-1">
-                  ({formatCurrency(amount)})
-                </span>
-              )}
-            </p>
-          </div>
+      <div className="flex items-center gap-5">
+        <div className={`p-2.5 rounded-lg ${priorityColor} transition-all`}>
+          <Icon size={22} strokeWidth={2.5} />
         </div>
-        <ChevronRight size={18} className="text-gray-400 group-hover:text-primary transition-colors" />
+        <div className="space-y-1">
+          <h4 className="text-sm font-bold text-gray-900 tracking-tight">{title}</h4>
+          <p className="text-xs text-gray-500 font-medium leading-normal">
+            {description}
+            {amount !== undefined && (
+              <span className="font-bold text-gray-900 ml-1.5 tabular-nums">
+                {formatCurrency(amount)}
+              </span>
+            )}
+          </p>
+        </div>
+      </div>
+      <div className="p-2 rounded-full bg-gray-50 text-gray-300 group-hover:bg-blue-50 group-hover:text-blue-600 transition-all">
+        <ChevronRight size={16} strokeWidth={3} />
       </div>
     </Link>
   );
