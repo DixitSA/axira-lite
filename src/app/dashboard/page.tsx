@@ -157,7 +157,12 @@ export default async function DashboardPage() {
     <div className="flex flex-col min-h-screen">
       <PageHeader 
         title="Dashboard" 
-        description="Daily operations at a glance"
+        description={
+          <>
+            <div className={`h-1.5 w-1.5 rounded-full ${actions.length > 0 ? 'bg-amber-500 animate-pulse' : 'bg-green-500'}`} />
+            <span>{actions.length > 0 ? `${actions.length} items require attention` : 'System status: Nominal'}</span>
+          </>
+        }
       />
       
       <div className="p-6 space-y-8 max-w-[1600px] mx-auto w-full">
@@ -191,7 +196,7 @@ export default async function DashboardPage() {
               label="Jobs Scheduled This Week" 
               value={jobsThisWeek} 
               icon={Briefcase}
-              trend="Current active window"
+              trend="Operational track: Clear"
             />
           </div>
           <div className="md:col-span-1 lg:col-span-3">
@@ -214,8 +219,8 @@ export default async function DashboardPage() {
         {/* Action Center */}
         <section>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-sm font-bold text-gray-900 uppercase tracking-widest">Action Center</h2>
-            <span className="h-px flex-1 bg-gray-100 ml-4" />
+            <h2 className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">Action Center</h2>
+            <span className="h-px flex-1 bg-gray-200/60 ml-6" />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {actions.length > 0 ? (
@@ -223,74 +228,77 @@ export default async function DashboardPage() {
                 <ActionCard key={action.type} {...action} />
               ))
             ) : (
-              <div className="col-span-full bg-white border border-gray-200 border-dashed rounded-lg p-12 text-center">
-                <p className="text-sm font-medium text-gray-400">All operational tracks are clear.</p>
+              <div className="col-span-full bg-white/50 border border-gray-200 border-dashed rounded-lg p-12 text-center">
+                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Operational queue clear</p>
               </div>
             )}
           </div>
         </section>
 
-        {/* Snapshots */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Jobs Snapshot */}
-          <section className="bg-white border border-gray-200 rounded-lg overflow-hidden flex flex-col">
+        {/* Snapshots - Asymmetric Density */}
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+          {/* Jobs Snapshot (Relaxed) */}
+          <section className="lg:col-span-3 bg-white border border-gray-200 rounded-lg overflow-hidden flex flex-col">
             <div className="px-5 py-3 border-b border-gray-100 bg-gray-50/50 flex items-center justify-between">
-              <h2 className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">Upcoming Schedule</h2>
-              <span className="text-[10px] font-medium text-gray-400">{[...todayJobs, ...tomorrowJobs].length} Active</span>
+              <h2 className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">Upcoming Schedule</h2>
+              <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">{[...todayJobs, ...tomorrowJobs].length} Active</span>
             </div>
             <div className="divide-y divide-gray-100 flex-1">
               {[...todayJobs, ...tomorrowJobs].length > 0 ? (
                 [...todayJobs, ...tomorrowJobs].map((job) => (
-                  <div key={job.id} className="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors cursor-pointer group">
-                    <div className="flex flex-col gap-0.5">
-                      <span className="text-sm font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
+                  <div key={job.id} className="p-5 flex items-center justify-between hover:bg-gray-50 transition-colors cursor-pointer group">
+                    <div className="flex flex-col gap-1">
+                      <span className="text-base font-bold text-gray-900 group-hover:text-blue-600 transition-colors tracking-tight">
                         {job.client.firstName} {job.client.lastName}
                       </span>
-                      <span className="text-[11px] font-medium text-gray-500">{job.title}</span>
+                      <div className="flex items-center gap-3">
+                         <span className="text-xs font-bold text-blue-600 tabular-nums uppercase">{formatTime(job.scheduledStart)}</span>
+                         <span className="h-1 w-1 rounded-full bg-gray-300" />
+                         <span className="text-xs font-medium text-gray-500">{job.title}</span>
+                      </div>
                     </div>
-                    <div className="flex flex-col items-end gap-1">
-                      <span className="text-xs font-bold text-gray-900 tabular-nums">{formatTime(job.scheduledStart)}</span>
-                      <StatusBadge status={job.status} />
-                    </div>
+                    <StatusBadge status={job.status} />
                   </div>
                 ))
               ) : (
                 <div className="p-12 text-center">
-                  <p className="text-xs font-medium text-gray-400">No appointments scheduled.</p>
+                  <p className="text-xs font-bold text-gray-300 uppercase tracking-widest">No appointments scheduled</p>
                 </div>
               )}
             </div>
           </section>
 
-          {/* Invoices Snapshot */}
-          <section className="bg-white border border-gray-200 rounded-lg overflow-hidden flex flex-col">
+          {/* Invoices Snapshot (Dense / Industrial) */}
+          <section className="lg:col-span-2 bg-white border border-gray-200 rounded-lg overflow-hidden flex flex-col">
             <div className="px-5 py-3 border-b border-gray-100 bg-gray-50/50 flex items-center justify-between">
-              <h2 className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">Overdue Accounts</h2>
-              <span className="text-[10px] font-medium text-red-500 font-bold">{overdueInvoicesList.length} Flagged</span>
+              <h2 className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">Flagged Accounts</h2>
+              <div className="flex items-center gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-red-500" />
+                <span className="text-[10px] font-bold text-red-600 uppercase">{overdueInvoicesList.length} Overdue</span>
+              </div>
             </div>
             <div className="divide-y divide-gray-100 flex-1">
               {overdueInvoicesList.length > 0 ? (
                 overdueInvoicesList.map((inv) => (
-                  <div key={inv.id} className="p-4 flex items-center justify-between hover:bg-red-50/30 transition-colors cursor-pointer group">
-                    <div className="flex flex-col gap-0.5">
-                      <span className="text-sm font-bold text-gray-900">
+                  <div key={inv.id} className="p-3 px-5 flex items-center justify-between hover:bg-red-50/30 transition-colors cursor-pointer group">
+                    <div className="flex flex-col">
+                      <span className="text-xs font-bold text-gray-900">
                         {inv.client.firstName} {inv.client.lastName}
                       </span>
-                      <span className="text-[11px] font-medium text-red-500">
-                        Due {formatRelativeDate(inv.dueDate)}
+                      <span className="text-[10px] font-bold text-red-500 uppercase tracking-tight">
+                        {formatRelativeDate(inv.dueDate)}
                       </span>
                     </div>
-                    <div className="flex flex-col items-end gap-1 text-right">
-                      <span className="text-sm font-bold text-red-600 tabular-nums">
+                    <div className="text-right">
+                      <span className="text-sm font-bold text-red-600 tabular-nums tracking-tighter">
                         {formatCurrency(inv.amount - inv.paidAmount)}
                       </span>
-                      <StatusBadge status="OVERDUE" />
                     </div>
                   </div>
                 ))
               ) : (
                 <div className="p-12 text-center">
-                  <p className="text-xs font-medium text-gray-400">All accounts are current.</p>
+                  <p className="text-xs font-bold text-gray-300 uppercase tracking-widest">Accounts current</p>
                 </div>
               )}
             </div>
