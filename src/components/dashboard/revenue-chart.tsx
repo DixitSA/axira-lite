@@ -87,6 +87,7 @@ export default function RevenueChart({ monthlyData }: RevenueChartProps) {
             </p>
           </div>
         </div>
+        </div>
       )}
     </div>
   );
