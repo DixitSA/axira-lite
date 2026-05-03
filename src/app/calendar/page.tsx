@@ -39,7 +39,7 @@ export default async function CalendarPage() {
         title="Operations Calendar" 
         description="Schedule and dispatch overview" 
       />
-      <div className="p-6 flex-1 max-w-[1600px] mx-auto w-full">
+      <div className="p-6 flex-1 flex flex-col min-h-0 max-w-[1600px] mx-auto w-full">
         <WeeklyCalendar jobs={formattedJobs} />
       </div>
     </div>
