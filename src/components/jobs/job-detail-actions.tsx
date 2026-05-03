@@ -45,7 +45,7 @@ export default function JobDetailActions({ jobId, status, hasInvoice }: JobDetai
       )}
       {status === "COMPLETED" && !hasInvoice && (
         <button
-          onClick={() => handleAction(() => createInvoiceForJob(jobId), "Invoice created")}
+          onClick={() => handleAction(() => createInvoiceForJob(jobId).then(() => {}), "Invoice created")}
           className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-amber-700 bg-amber-50 border border-amber-200 rounded-lg hover:bg-amber-100 transition-colors"
         >
           <FileText size={14} /> Create Invoice
