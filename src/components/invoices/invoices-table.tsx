@@ -71,7 +71,6 @@ export default function InvoicesTable({ invoices }: InvoicesTableProps) {
         await actionFn();
         if (successMsg) showToast(successMsg);
       } catch (error) {
-        console.error("Action failed:", error);
         showToast(error instanceof Error ? error.message : "Action failed", "error");
       }
     });
@@ -187,7 +186,7 @@ export default function InvoicesTable({ invoices }: InvoicesTableProps) {
                             className="fixed inset-0 z-10" 
                             onClick={() => setOpenDropdownId(null)}
                           />
-                          <div className="absolute right-0 mt-0 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-20">
+                          <div className="absolute right-0 mt-0 w-48 rounded-md shadow-lg bg-white ring-1 ring-black/5 z-20">
                             <div className="py-1" role="menu">
                               {(invoice.status === "PENDING" || invoice.status === "OVERDUE") && (
                                 <button
@@ -214,7 +213,9 @@ export default function InvoicesTable({ invoices }: InvoicesTableProps) {
                               {invoice.status !== "VOID" && invoice.status !== "PAID" && (
                                 <button
                                   onClick={() => {
-                                    handleAction(() => voidInvoice(invoice.id), "Invoice voided");
+                                    if (window.confirm(`Void invoice ${invoice.invoiceNumber}? This cannot be undone.`)) {
+                                      handleAction(() => voidInvoice(invoice.id), "Invoice voided");
+                                    }
                                     setOpenDropdownId(null);
                                   }}
                                   className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"

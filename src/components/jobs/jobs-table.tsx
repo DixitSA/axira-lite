@@ -79,7 +79,6 @@ export default function JobsTable({ jobs }: JobsTableProps) {
         await actionFn();
         if (successMsg) showToast(successMsg);
       } catch (error) {
-        console.error("Action failed:", error);
         showToast(error instanceof Error ? error.message : "Action failed", "error");
       }
     });
@@ -183,7 +182,7 @@ export default function JobsTable({ jobs }: JobsTableProps) {
                           className="fixed inset-0 z-10" 
                           onClick={() => setOpenDropdownId(null)}
                         />
-                        <div className="absolute right-0 mt-0 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-20">
+                        <div className="absolute right-0 mt-0 w-48 rounded-md shadow-lg bg-white ring-1 ring-black/5 z-20">
                           <div className="py-1" role="menu">
                             {job.status === "SCHEDULED" && (
                               <button
@@ -219,7 +218,15 @@ export default function JobsTable({ jobs }: JobsTableProps) {
                             {job.status === "COMPLETED" && !job.invoicedAt && (
                               <button
                                 onClick={() => {
-                                  handleAction(() => createInvoiceForJob(job.id), "Invoice created");
+                                  startTransition(async () => {
+                                    try {
+                                      await createInvoiceForJob(job.id);
+                                      showToast("Invoice created");
+                                      router.push("/invoices");
+                                    } catch (error) {
+                                      showToast(error instanceof Error ? error.message : "Failed to create invoice", "error");
+                                    }
+                                  });
                                   setOpenDropdownId(null);
                                 }}
                                 className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"

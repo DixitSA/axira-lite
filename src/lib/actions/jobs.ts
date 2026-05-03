@@ -66,8 +66,8 @@ export async function createInvoiceForJob(jobId: number) {
   const dueDate = new Date();
   dueDate.setDate(dueDate.getDate() + 30); // Net 30
 
-  // Run in transaction to ensure consistency
-  await db.$transaction([
+  // Run in transaction to ensure consistency; return invoice id for client navigation
+  const [invoice] = await db.$transaction([
     db.invoice.create({
       data: {
         businessId,
@@ -89,6 +89,7 @@ export async function createInvoiceForJob(jobId: number) {
   revalidatePath("/jobs");
   revalidatePath("/invoices");
   revalidatePath("/dashboard");
+  return invoice.id;
 }
 
 export async function cancelJob(jobId: number) {
