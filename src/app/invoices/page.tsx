@@ -91,7 +91,7 @@ export default async function InvoicesPage({
       </PageHeader>
       
       <div className="p-6">
-        <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
+        <div className="bg-white border border-gray-200 rounded-lg">
           <InvoicesFilters />
           <InvoicesTable invoices={invoices} />
         </div>

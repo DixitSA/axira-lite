@@ -48,7 +48,7 @@ export default function DashboardSnapshots({
         <section aria-labelledby="upcoming-schedule-title" className="lg:col-span-3 bg-white border border-gray-200 rounded-lg overflow-hidden flex flex-col">
           <div className="px-5 py-3 border-b border-gray-100 bg-gray-50/50 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <h2 id="upcoming-schedule-title" className="text-xs font-bold text-gray-400 uppercase tracking-[0.2em]">Upcoming Schedule</h2>
+              <h2 id="upcoming-schedule-title" className="text-xs font-bold text-gray-400 uppercase tracking-[0.2em]">Today's Schedule</h2>
               <div className="group relative">
                 <Info size={12} className="text-gray-300 cursor-help" />
                 <div className="absolute left-0 bottom-full mb-2 hidden group-hover:block w-48 p-2 bg-gray-900 text-[10px] text-white rounded shadow-xl z-50">

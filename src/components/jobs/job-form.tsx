@@ -36,7 +36,7 @@ export default function JobForm({ isOpen, onClose, clients, defaultClientId }: J
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg overflow-hidden">
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-gray-50/50">
           <h3 className="font-semibold text-gray-900 text-lg">New Job</h3>
-          <button onClick={onClose} className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+          <button onClick={onClose} aria-label="Close" className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
             <X size={20} />
           </button>
         </div>

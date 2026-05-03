@@ -89,7 +89,7 @@ export default async function JobsPage({
       </PageHeader>
       
       <div className="p-6">
-        <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
+        <div className="bg-white border border-gray-200 rounded-lg">
           <JobsFilters />
           <JobsTable jobs={jobs} />
         </div>

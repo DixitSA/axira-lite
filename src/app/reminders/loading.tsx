@@ -9,7 +9,7 @@ export default function RemindersLoading() {
       />
       
       <div className="p-6">
-        <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
+        <div className="bg-white border border-gray-200 rounded-lg">
           {/* Table Skeleton */}
           <div className="p-4 space-y-4 mt-10">
             {[1, 2, 3, 4, 5].map((i) => (

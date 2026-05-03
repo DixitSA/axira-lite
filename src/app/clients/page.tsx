@@ -66,7 +66,7 @@ export default async function ClientsPage({
       </PageHeader>
       
       <div className="p-6">
-        <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
+        <div className="bg-white border border-gray-200 rounded-lg">
           <ClientsFilters />
           <ClientsTable 
             clients={clients} 

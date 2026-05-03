@@ -13,6 +13,7 @@ interface ComposeModalProps {
   clientName?: string;
   invoiceId?: number;
   jobId?: number;
+  businessName?: string;
   // Context for interpolation
   amount?: number;
   dueDate?: Date;

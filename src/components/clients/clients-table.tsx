@@ -174,21 +174,21 @@ export default function ClientsTable({ clients, businessName }: ClientsTableProp
                     <button
                       onClick={() => openJobModal(client.id)}
                       title="New Job"
-                      className="p-1.5 rounded-md text-gray-400 hover:text-blue-600 hover:bg-blue-50 focus:outline-none transition-all"
+                      className="p-1.5 rounded-md text-gray-400 hover:text-blue-600 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-1 transition-all"
                     >
                       <PlusCircle size={16} strokeWidth={2.5} />
                     </button>
                     <button
                       onClick={() => openSMSComposer(client)}
                       title="Send SMS"
-                      className="p-1.5 rounded-md text-gray-400 hover:text-blue-600 hover:bg-blue-50 focus:outline-none transition-all"
+                      className="p-1.5 rounded-md text-gray-400 hover:text-blue-600 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-1 transition-all"
                     >
                       <MessageSquare size={16} strokeWidth={2.5} />
                     </button>
                     <button
                       onClick={() => openReminder(client.id, clientName)}
                       title="Send Reminder"
-                      className="p-1.5 rounded-md text-gray-400 hover:text-blue-600 hover:bg-blue-50 focus:outline-none transition-all"
+                      className="p-1.5 rounded-md text-gray-400 hover:text-blue-600 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-1 transition-all"
                     >
                       <Bell size={16} strokeWidth={2.5} />
                     </button>

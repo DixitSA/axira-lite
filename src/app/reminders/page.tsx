@@ -24,7 +24,7 @@ export default async function RemindersPage() {
       />
       
       <div className="p-6">
-        <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+        <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
           <DataTable>
             <DataTableHeader>
               <DataTableCell isHeader className="w-[20%]">Client</DataTableCell>

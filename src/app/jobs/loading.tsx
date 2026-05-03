@@ -11,7 +11,7 @@ export default function JobsLoading() {
       </PageHeader>
       
       <div className="p-6">
-        <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
+        <div className="bg-white border border-gray-200 rounded-lg">
           {/* Filters Skeleton */}
           <div className="p-4 border-b border-gray-200 flex flex-col sm:flex-row gap-4">
             <div className="h-9 w-full sm:w-64 bg-gray-200 rounded-md"></div>
