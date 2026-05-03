@@ -196,7 +196,7 @@ export default async function DashboardPage() {
         description={
           <>
             <div className={`h-1.5 w-1.5 rounded-full ${actions.length > 0 ? 'bg-amber-500 animate-pulse' : 'bg-green-500'}`} />
-            <span>{actions.length > 0 ? `${actions.length} items require attention` : 'System status: Nominal'}</span>
+            <span>{actions.length > 0 ? `${actions.length} items require attention` : 'All clear'}</span>
           </>
         }
       />
@@ -228,11 +228,10 @@ export default async function DashboardPage() {
           </div>
           
           <div className="md:col-span-2 lg:col-span-6">
-            <KpiCard 
-              label="Jobs Scheduled This Week" 
-              value={jobsThisWeek} 
+            <KpiCard
+              label="Jobs Scheduled This Week"
+              value={jobsThisWeek}
               icon={Briefcase}
-              trend="Operational track: Clear"
             />
           </div>
           <div className="md:col-span-1 lg:col-span-3">
@@ -258,7 +257,7 @@ export default async function DashboardPage() {
         {/* Action Center */}
         <section aria-labelledby="action-center-title">
           <div className="flex items-center justify-between mb-4">
-            <h2 id="action-center-title" className="text-xs font-bold text-gray-400 uppercase tracking-[0.2em]">Action Center</h2>
+            <h2 id="action-center-title" className="text-xs font-bold text-gray-400 uppercase tracking-[0.2em]">Needs Attention</h2>
             <span className="h-px flex-1 bg-gray-200/60 ml-6" />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -268,7 +267,7 @@ export default async function DashboardPage() {
               ))
             ) : (
               <div className="col-span-full bg-white/50 border border-gray-200 border-dashed rounded-lg p-12 text-center">
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Operational queue clear</p>
+                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">You're all caught up</p>
               </div>
             )}
           </div>

@@ -25,7 +25,7 @@ export default function RevenueChart({ monthlyData }: RevenueChartProps) {
     <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
       <div className="px-5 py-3 border-b border-gray-100 bg-gray-50/50 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <h2 className="text-xs font-bold text-gray-400 uppercase tracking-[0.2em]">Cash Flow Radar</h2>
+          <h2 className="text-xs font-bold text-gray-400 uppercase tracking-[0.2em]">Revenue Overview</h2>
           <button 
             onClick={() => setIsCollapsed(!isCollapsed)}
             className="p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded transition-all"
