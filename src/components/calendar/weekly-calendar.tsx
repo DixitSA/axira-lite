@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { format, addDays, startOfWeek, isSameDay } from "date-fns";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
@@ -91,7 +91,7 @@ export default function WeeklyCalendar({ jobs }: WeeklyCalendarProps) {
 
   return (
     // FIX (adapt): replaced h-[calc(100vh-12rem)] with flex-1 min-h-0 — fills parent flex column
-    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden flex flex-col flex-1 min-h-0 min-h-[600px]">
+    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden flex flex-col flex-1 min-h-[600px]">
 
       {/* Toolbar */}
       <div className="px-5 py-4 border-b border-gray-100 bg-gray-50 flex items-center justify-between flex-shrink-0">
@@ -151,13 +151,13 @@ export default function WeeklyCalendar({ jobs }: WeeklyCalendarProps) {
             <div
               key={`desktop-col-${i}`}
               aria-current={isToday ? "date" : undefined}
-              className="border-r border-gray-100 p-2 overflow-y-auto bg-gray-50/30 last:border-r-0"
+              className={`border-r border-gray-100 p-2 overflow-y-auto last:border-r-0 ${isToday ? "bg-blue-50/50" : "bg-gray-50/30"}`}
             >
               <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center mb-1">
                 {format(day, "EEE")}
               </div>
               <div
-                className={`text-lg font-semibold text-center ${isToday ? "text-blue-600" : "text-gray-900"}`}
+                className={`text-lg text-center ${isToday ? "font-bold text-blue-600" : "font-semibold text-gray-900"}`}
               >
                 {format(day, "d")}
               </div>
