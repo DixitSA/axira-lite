@@ -24,3 +24,10 @@ export const STATUS_COLORS: Record<string, string> = {
   AT_RISK: "bg-status-overdue-bg text-status-overdue-text",
   INACTIVE: "bg-gray-100 text-gray-500",
 };
+
+// Legend dot colors for the calendar — saturated accents matching STATUS_COLORS hues
+export const CALENDAR_LEGEND_ITEMS = [
+  { label: "Scheduled", dotClass: "bg-blue-500" },
+  { label: "In Progress", dotClass: "bg-amber-500" },
+  { label: "Completed", dotClass: "bg-green-500" },
+] as const;

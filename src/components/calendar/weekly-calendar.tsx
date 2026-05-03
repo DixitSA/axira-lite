@@ -5,7 +5,7 @@ import { format, addDays, startOfWeek, isSameDay } from "date-fns";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { formatTime } from "@/lib/utils/format";
-import { STATUS_COLORS } from "@/lib/utils/constants";
+import { STATUS_COLORS, CALENDAR_LEGEND_ITEMS } from "@/lib/utils/constants";
 
 interface JobEvent {
   id: number;
@@ -19,17 +19,10 @@ interface WeeklyCalendarProps {
   jobs: JobEvent[];
 }
 
-// Legend derived from STATUS_COLORS hues — dots use the saturated accent, not the tint bg
-const LEGEND_ITEMS = [
-  { label: "Scheduled", dotClass: "bg-blue-500" },
-  { label: "In Progress", dotClass: "bg-amber-500" },
-  { label: "Completed", dotClass: "bg-green-500" },
-] as const;
-
 function CalendarLegend() {
   return (
     <div className="flex items-center gap-3">
-      {LEGEND_ITEMS.map(({ label, dotClass }) => (
+      {CALENDAR_LEGEND_ITEMS.map(({ label, dotClass }) => (
         <div key={label} className="flex items-center gap-1.5">
           <div className={`w-2 h-2 rounded-full ${dotClass}`} aria-hidden="true" />
           <span className="text-[10px] font-bold text-gray-400 uppercase">{label}</span>
@@ -84,10 +77,20 @@ export default function WeeklyCalendar({ jobs }: WeeklyCalendarProps) {
     return map;
   }, [jobs, days]);
 
-  const todayStr = useMemo(
-    () => new Date().toISOString().split("T")[0],
-    []
+  const [todayStr, setTodayStr] = useState(
+    () => new Date().toISOString().split("T")[0]
   );
+
+  useEffect(() => {
+    const now = new Date();
+    const msUntilMidnight =
+      new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1).getTime() -
+      now.getTime();
+    const timeout = setTimeout(() => {
+      setTodayStr(new Date().toISOString().split("T")[0]);
+    }, msUntilMidnight);
+    return () => clearTimeout(timeout);
+  }, [todayStr]);
 
   return (
     // FIX (adapt): replaced h-[calc(100vh-12rem)] with flex-1 min-h-0 — fills parent flex column
